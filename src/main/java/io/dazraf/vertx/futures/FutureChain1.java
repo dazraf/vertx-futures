@@ -2,13 +2,16 @@ package io.dazraf.vertx.futures;
 
 import io.vertx.core.Future;
 
-class FutureChain1<T> extends AbstractFutureChain<T, FutureChain1<T>> {
-  FutureChain1(Future<T> result) {
-    super(result);
+class FutureChain1<T> extends FutureChainImpl<T, FutureChain1<T>> {
+  FutureChain1() {}
+
+  public FutureChain1(Future<T> future) {
+    future.setHandler(this);
   }
 
   @Override
-  protected FutureChain1<T> wrap(Future<T> future) {
-    return FutureChain.when(future);
+  protected FutureChain1<T> create() {
+    return new FutureChain1<>();
   }
+
 }

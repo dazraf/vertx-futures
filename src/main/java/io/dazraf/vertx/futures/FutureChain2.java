@@ -2,40 +2,44 @@ package io.dazraf.vertx.futures;
 
 import io.dazraf.vertx.futures.consumer.Consumer2;
 import io.dazraf.vertx.futures.function.Function2;
+import io.dazraf.vertx.futures.tuple.Tuple2;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
+import org.slf4j.Logger;
 
-class FutureChain2<T1, T2> extends AbstractFutureChain<CompositeFuture, FutureChain2<T1, T2>> {
-  FutureChain2(Future<T1> t1, Future<T2> t2) {
-    this(CompositeFuture.all(t1, t2));
+import java.util.Arrays;
+
+import static org.slf4j.LoggerFactory.*;
+
+class FutureChain2<T1, T2> extends FutureChainN<Tuple2<T1, T2>, FutureChain2<T1, T2>> {
+  private static final Logger LOG = getLogger(FutureChain2.class);
+
+  public FutureChain2(Future<T1> future1, Future<T2> future2) {
+    super(Arrays.asList(future1, future2));
   }
 
-  FutureChain2(Future<CompositeFuture> tuple) {
-    super(tuple);
+  public FutureChain2() {}
+
+  public FutureChain2<T1, T2> peekSuccess(Consumer2<T1, T2> peekConsumer) {
+    return super.peekSuccess(t -> t.accept(peekConsumer));
+  }
+
+  public FutureChain2<T1, T2> onSuccess(Consumer2<T1, T2> consumer) {
+    return super.onSuccess(t -> t.accept(consumer));
+  }
+
+  public <R> FutureChain1<R> then(Function2<T1, T2, Future<R>> function) {
+    return super.then(t -> t.apply(function));
   }
 
   @Override
-  protected FutureChain2<T1, T2> wrap(Future<CompositeFuture> result) {
-    return new FutureChain2<>(result);
+  protected FutureChain2<T1, T2> create() {
+    return new FutureChain2<>();
   }
 
-  <T3> FutureChain1<T3> then(Function2<T1, T2, Future<T3>> then) {
-    return super.then(cf -> then.apply(getT1(cf), getT2(cf)));
+  @Override
+  protected Tuple2<T1, T2> createTuple(CompositeFuture resolvedFuture) {
+    return new Tuple2<>(resolvedFuture);
   }
 
-  FutureChain2<T1, T2> onSuccess(Consumer2<T1, T2> consumer) {
-    return super.onSuccess(cf -> consumer.accept(getT1(cf), getT2(cf)));
-  }
-
-  public FutureChain2<T1, T2> peek(Consumer2<T1, T2> consumer) {
-    return super.peek(cf -> consumer.accept(getT1(cf), getT2(cf)));
-  }
-
-  private T2 getT2(CompositeFuture cf) {
-    return cf.result(1);
-  }
-
-  private T1 getT1(CompositeFuture cf) {
-    return cf.result(0);
-  }
 }
