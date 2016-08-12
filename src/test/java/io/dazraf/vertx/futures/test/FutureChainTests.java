@@ -1,4 +1,4 @@
-package io.dazraf.vertx.futures;
+package io.dazraf.vertx.futures.test;
 
 import io.dazraf.vertx.futures.tuple.Tuple2;
 import io.vertx.core.CompositeFuture;
@@ -15,8 +15,8 @@ import static org.slf4j.LoggerFactory.*;
 
 public class FutureChainTests {
   private static final Logger LOG = getLogger(FutureChainTests.class);
-  public static final String NAME = "Fuzz";
-  public static final int AGE = 45;
+  private static final String NAME = "Fuzz";
+  private static final int AGE = 45;
 
   @Test
   public void oneResultTest() {

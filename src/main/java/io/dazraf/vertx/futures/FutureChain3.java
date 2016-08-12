@@ -2,8 +2,8 @@ package io.dazraf.vertx.futures;
 
 import io.dazraf.vertx.futures.consumer.Consumer3;
 import io.dazraf.vertx.futures.function.Function3;
-import io.dazraf.vertx.futures.tuple.Tuple2;
 import io.dazraf.vertx.futures.tuple.Tuple3;
+import io.dazraf.vertx.futures.tuple.Tuple2;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 

@@ -2,7 +2,7 @@ package io.dazraf.vertx.futures;
 
 import io.vertx.core.Future;
 
-class FutureChain1<T> extends FutureChainImpl<T, FutureChain1<T>> {
+public class FutureChain1<T> extends FutureChainImpl<T, FutureChain1<T>> {
   FutureChain1() {}
 
   public FutureChain1(Future<T> future) {

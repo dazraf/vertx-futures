@@ -16,7 +16,7 @@ public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends
 
   // receive the result, error, or both
   // the given state is passed through to the subsequent listeners in the graph
-  // if the consumer throws, the error is propagated
+  // if the consumer throws, the error is propagated to all listeners
   Derived onSuccess(Consumer<T> consumer);
   Derived onFail(Consumer<Throwable> consumer);
   Derived onComplete(Consumer<AsyncResult<T>> consumer);
@@ -37,6 +37,8 @@ public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends
   FutureChain1<T> ifFailed(Function<Throwable, Future<T>> whenFn);
 
   FutureChain1<Void> mapVoid();
+  <R> FutureChain1<R> map(Function<T, R> mapFn);
+  <R> FutureChain1<R> map(R value);
 
   // --- Factory methods
   static <T> FutureChain1<T> when(Future<T> future) {

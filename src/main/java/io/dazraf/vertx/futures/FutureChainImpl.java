@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 import static org.slf4j.LoggerFactory.*;
 
-abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
+public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
   implements FutureChain<T, Derived>, Handler<AsyncResult<T>> {
 
   private static final Logger LOG = getLogger(FutureChainImpl.class);
@@ -235,6 +235,39 @@ abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
     return result;
   }
 
+  @Override
+  public <R> FutureChain1<R> map(Function<T, R> mapFn) {
+    FutureChain1<R> result = new FutureChain1<>();
+    setHandler(ar -> {
+      if (ar.succeeded()) {
+        try {
+          result.complete(mapFn.apply(ar.result()));
+        } catch(Throwable throwable) {
+          result.fail(throwable);
+        }
+      } else {
+        result.fail(ar.cause());
+      }
+    });
+    return result;
+  }
+
+  @Override
+  public <R> FutureChain1<R> map(R value) {
+    FutureChain1<R> result = new FutureChain1<>();
+    setHandler(ar -> {
+      if (ar.succeeded()) {
+        try {
+          result.complete(value);
+        } catch(Throwable throwable) {
+          result.fail(throwable);
+        }
+      } else {
+        result.fail(ar.cause());
+      }
+    });
+    return result;
+  }
 
   // --- PROTECTED --
 

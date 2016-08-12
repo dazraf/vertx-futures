@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 import static org.slf4j.LoggerFactory.*;
 
-class FutureChain2<T1, T2> extends FutureChainX<Tuple2<T1, T2>, FutureChain2<T1, T2>> {
+public class FutureChain2<T1, T2> extends FutureChainX<Tuple2<T1, T2>, FutureChain2<T1, T2>> {
   private static final Logger LOG = getLogger(FutureChain2.class);
 
   public FutureChain2(Future<T1> future1, Future<T2> future2) {

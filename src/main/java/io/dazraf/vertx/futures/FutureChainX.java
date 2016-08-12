@@ -6,7 +6,7 @@ import io.vertx.core.Future;
 
 import java.util.List;
 
-abstract class FutureChainX<T extends Tuple<T>, Derived extends FutureChainX<T, Derived>>
+public abstract class FutureChainX<T extends Tuple<T>, Derived extends FutureChainX<T, Derived>>
   extends FutureChainImpl<T, Derived> {
 
   protected FutureChainX() {
