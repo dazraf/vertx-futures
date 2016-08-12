@@ -15,7 +15,9 @@ public class FutureChain3<T1, T2, T3> extends FutureChainX<Tuple3<T1, T2, T3>, F
     super(Arrays.asList(future1, future2, future3));
   }
 
-  public FutureChain3() {}
+  public FutureChain3(Object parent) {
+    super(parent);
+  }
 
   public FutureChain3<T1, T2, T3> peekSuccess(Consumer3<T1, T2, T3> peekConsumer) {
     return super.peekSuccess(t -> t.accept(peekConsumer));
@@ -38,7 +40,7 @@ public class FutureChain3<T1, T2, T3> extends FutureChainX<Tuple3<T1, T2, T3>, F
   }
 
   public FutureChain3<T1, T2, T3> ifFailed3(Function<Throwable, Future<Tuple3<T1, T2, T3>>> ifFailedFn) {
-    FutureChain3<T1, T2, T3> result = new FutureChain3<>();
+    FutureChain3<T1, T2, T3> result = new FutureChain3<>(this);
     super.ifFailedX(result, ifFailedFn);
     return result;
   }
@@ -50,6 +52,6 @@ public class FutureChain3<T1, T2, T3> extends FutureChainX<Tuple3<T1, T2, T3>, F
 
   @Override
   protected FutureChain3<T1, T2, T3> create() {
-    return new FutureChain3<>();
+    return new FutureChain3<>(this);
   }
 }
