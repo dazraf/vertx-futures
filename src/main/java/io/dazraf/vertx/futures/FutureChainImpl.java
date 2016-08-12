@@ -1,6 +1,7 @@
 package io.dazraf.vertx.futures;
 
 import io.dazraf.vertx.futures.tuple.Tuple2;
+import io.dazraf.vertx.futures.tuple.Tuple3;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -105,44 +106,40 @@ abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
     }
   }
 
+  // --- then() functions
+
   @Override
-  public <R> FutureChain1<R> then(Function<T, Future<R>> tFutureFunction) {
+  public <R> FutureChain1<R> then(Function<T, Future<R>> thenFn) {
     FutureChain1<R> result = new FutureChain1<>();
-    setHandler(ar -> {
-      if (ar.failed()) {
-        result.fail(ar.cause());
-        return;
-      }
-      // succcess
-      try {
-        final Future<R> newFuture = tFutureFunction.apply(ar.result());
-        newFuture.setHandler(result);
-      } catch (Throwable throwable) {
-        result.fail(throwable);
-      }
-    });
+    thenX(result, thenFn);
     return result;
   }
 
   @Override
-  public <T1, T2> FutureChain2<T1, T2> then2(Function<T, Future<Tuple2<T1, T2>>> tFutureFunction) {
+  public <T1, T2> FutureChain2<T1, T2> then2(Function<T, Future<Tuple2<T1, T2>>> thenFn) {
     FutureChain2<T1, T2> result = new FutureChain2<>();
-    setHandler(ar -> {
-      if (ar.failed()) {
-        result.fail(ar.cause());
-        return;
-      }
-      // succcess
-      try {
-        final Future<Tuple2<T1, T2>> newFuture = tFutureFunction.apply(ar.result());
-        newFuture.setHandler(result);
-      } catch (Throwable throwable) {
-        result.fail(throwable);
-      }
-    });
+    thenX(result, thenFn);
+    return result;
+
+  }
+
+  public <T1, T2, T3> FutureChain3<T1, T2, T3> then3(Function<T, Future<Tuple3<T1, T2, T3>>> thenFn) {
+    FutureChain3<T1, T2, T3> result = new FutureChain3<>();
+    thenX(result, thenFn);
     return result;
   }
 
+  // -- method to return another future, if failed
+
+  @Override
+  public FutureChain1<T> ifFailed(Function<Throwable, Future<T>> ifFailedFn) {
+    FutureChain1<T> result = new FutureChain1<T>();
+    ifFailedX(result, ifFailedFn);
+    return result;
+  }
+
+
+  // --- methods to receive state
 
   @Override
   public Derived onSuccess(Consumer<T> consumer) {
@@ -168,7 +165,6 @@ abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
         try {
           consumer.accept(ar.result());
         } catch (Throwable throwable) {
-          LOG.trace("peekSuccess consumer failed", throwable);
         }
       }
     });
@@ -176,7 +172,26 @@ abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
   }
 
   @Override
-  public Derived onError(Consumer<Throwable> consumer) {
+  public Derived peekFail(Consumer<Throwable> consumer) {
+    setHandler(ar -> {
+      if (ar.failed()) {
+        try {
+          consumer.accept(ar.cause());
+        } catch (Throwable throwable) {
+        }
+      }
+    });
+    return getThis();
+  }
+
+  @Override
+  public Derived peekComplete(Consumer<AsyncResult<T>> consumer) {
+    setHandler(consumer::accept);
+    return getThis();
+  }
+
+  @Override
+  public Derived onFail(Consumer<Throwable> consumer) {
     Derived result = create();
     setHandler(ar -> {
       if (failed) {
@@ -194,7 +209,7 @@ abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
   }
 
   @Override
-  public Derived onResult(Consumer<AsyncResult<T>> consumer) {
+  public Derived onComplete(Consumer<AsyncResult<T>> consumer) {
     Derived result = create();
     setHandler(ar -> {
       try {
@@ -207,6 +222,20 @@ abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
     return result;
   }
 
+  @Override
+  public FutureChain1<Void> mapVoid() {
+    FutureChain1<Void> result = new FutureChain1<>();
+    addHandler(ar -> {
+      if (ar.failed()) {
+        result.fail(ar.cause());
+      } else {
+        result.complete();
+      }
+    });
+    return result;
+  }
+
+
   // --- PROTECTED --
 
   /**
@@ -218,6 +247,36 @@ abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
   @SuppressWarnings("unchecked")
   protected Derived getThis() {
     return (Derived)this;
+  }
+
+
+  protected <R> void thenX(Future<R> collector, Function<T, Future<R>> thenFn) {
+    setHandler(ar -> {
+      if (ar.failed()) {
+        collector.fail((ar.cause()));
+        return;
+      }
+      // success
+      try {
+        thenFn.apply(ar.result()).setHandler(collector.completer());
+      } catch (Throwable err) {
+        collector.fail(err);
+      }
+    });
+  }
+
+  protected void ifFailedX(Future<T> collector, Function<Throwable, Future<T>> ifFailedFn) {
+    setHandler(ar -> {
+      if (ar.failed()) {
+        try {
+          ifFailedFn.apply(ar.cause()).setHandler(collector.completer());
+        } catch (Throwable throwable) {
+          collector.fail(throwable);
+        }
+      } else {
+        collector.complete(ar.result());
+      }
+    });
   }
 
   // ---- PRIVATE ----
@@ -254,4 +313,6 @@ abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
       throw new RuntimeException("Future is already complete");
     }
   }
+
+
 }

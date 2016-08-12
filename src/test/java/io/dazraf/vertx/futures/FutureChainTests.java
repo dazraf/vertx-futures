@@ -54,8 +54,6 @@ public class FutureChainTests {
       .onSuccess(LOG::info);
   }
 
-
-
   private Future<String> composeMessage(String name, Integer age) {
     return succeededFuture("hello " + name + ", you are " + age + " year" + (age > 1 ? "s" : "") + " old");
   }
