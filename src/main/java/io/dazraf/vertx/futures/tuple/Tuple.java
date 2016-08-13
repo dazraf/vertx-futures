@@ -32,14 +32,6 @@ public abstract class Tuple<T extends Tuple> {
 
 
   private static <T extends Tuple<T>> Future<T> allFutureX(List<Future> futures, Function<CompositeFuture, T> adapter) {
-    Future<T> result = Future.future();
-    CompositeFuture.all(futures).setHandler(ar -> {
-      if (ar.succeeded()) {
-        result.complete(adapter.apply(ar.result()));
-      } else {
-        result.fail(ar.cause());
-      }
-    });
-    return result;
+    return CompositeFuture.all(futures).map(adapter);
   }
 }
