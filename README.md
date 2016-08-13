@@ -6,7 +6,7 @@ This is very much __Work In Progress__
 
 For users of Vert.x in Java.
 
-A library that will help you to write complex asynchronous logic in a legible, elegant and efficient manner.
+Helps you to write complex, yet legible, asynchronous logic with elegance, efficiency and flair.
 
 Inspired by Promises/A+ specification.
 
