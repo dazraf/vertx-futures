@@ -1,7 +1,6 @@
 
 # User-specific stuff:
 .idea/
-.idea/**
 
 vertx-futures.iml
 ## File-based project format:
