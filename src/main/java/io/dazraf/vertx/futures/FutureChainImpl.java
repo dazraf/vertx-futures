@@ -158,6 +158,8 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
         } catch (Throwable throwable) {
           next.fail(throwable);
         }
+      } else {
+        next.fail(ar.cause());
       }
     });
     return next;
@@ -170,6 +172,7 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
         try {
           consumer.accept(ar.result());
         } catch (Throwable throwable) {
+          LOG.trace("peek success threw an exception that I swallowed by design.", throwable);
         }
       }
     });
@@ -183,6 +186,7 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
         try {
           consumer.accept(ar.cause());
         } catch (Throwable throwable) {
+          LOG.trace("peekFail function threw an exception that I swallowed by design", throwable);
         }
       }
     });
@@ -288,8 +292,7 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
     return (Derived)this;
   }
 
-
-  protected <R> void thenX(Future<R> collector, Function<T, Future<R>> thenFn) {
+  private <R> void thenX(Future<R> collector, Function<T, Future<R>> thenFn) {
     setHandler(ar -> {
       if (ar.failed()) {
         collector.fail((ar.cause()));
@@ -304,7 +307,7 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
     });
   }
 
-  protected void ifFailedX(Future<T> collector, Function<Throwable, Future<T>> ifFailedFn) {
+  void ifFailedX(Future<T> collector, Function<Throwable, Future<T>> ifFailedFn) {
     setHandler(ar -> {
       if (ar.failed()) {
         try {

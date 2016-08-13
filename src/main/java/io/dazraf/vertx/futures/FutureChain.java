@@ -7,6 +7,7 @@ import io.vertx.core.Future;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  *
@@ -21,6 +22,7 @@ public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends
   Derived onSuccess(Consumer<T> consumer);
   Derived onFail(Consumer<Throwable> consumer);
   Derived onComplete(Consumer<AsyncResult<T>> consumer);
+
 
   // receive the result, error, or both
   // the given state is passed through the subsequent listeners in the graph
@@ -53,4 +55,17 @@ public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends
   static <T1, T2, T3> FutureChain3<T1, T2, T3> when(Future<T1> future1, Future<T2> future2, Future<T3> future3) {
     return new FutureChain3<>(future1, future2, future3);
   }
+
+
+  // --- Default methods
+
+  default Derived onSuccess(Runnable runnable) { return onSuccess(t -> runnable.run()); }
+  default Derived onFail(Runnable runnable) { return onFail(e -> runnable.run()); }
+  default Derived onComplete(Runnable runnable) { return onComplete(ar -> runnable.run()); }
+
+  default Derived peekSuccess(Runnable runnable) { return peekSuccess(t -> runnable.run()); }
+  default Derived peekFail(Runnable runnable) { return peekFail(t -> runnable.run()); }
+  default Derived peekComplete(Runnable runnable) { return peekComplete(t -> runnable.run()); }
+  default FutureChain1<T> ifFailed(Supplier<Future<T>> supplier) { return ifFailed(t -> supplier.get());}
+
 }
