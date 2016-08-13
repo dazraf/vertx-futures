@@ -1,5 +1,6 @@
-package io.dazraf.vertx.futures.test;
+package io.dazraf.vertx.futures.test.failed_future_tests;
 
+import io.dazraf.vertx.futures.test.TestUtils;
 import io.vertx.core.Future;
 import org.junit.Test;
 

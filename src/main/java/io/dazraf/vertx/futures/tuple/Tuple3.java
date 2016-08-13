@@ -30,8 +30,8 @@ public class Tuple3<T1, T2, T3> extends Tuple<Tuple3<T1, T2, T3>> {
     return t2;
   }
 
-  public T2 getT3() {
-    return t2;
+  public T3 getT3() {
+    return t3;
   }
 
   public void accept(Consumer3<T1, T2, T3> consumer) {

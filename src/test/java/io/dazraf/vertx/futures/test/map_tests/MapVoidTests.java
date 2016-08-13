@@ -1,4 +1,4 @@
-package io.dazraf.vertx.futures.test;
+package io.dazraf.vertx.futures.test.map_tests;
 
 import io.dazraf.vertx.futures.FutureChain;
 import org.junit.Test;
