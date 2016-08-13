@@ -16,7 +16,7 @@ Inspired by Promises/A+ specification.
 * Efficient for developers and computers
 * Ability to create arbitrary compute graphs of futures i.e. ...
 * Join multiple futures together in a type safe manner (using first-class tuples)
-* Proper *Destructuring* of collection of futues to a lambda equivalent number of parameters
+* Proper *Destructuring* of collection of futures into lambdas of equivalent parameters
 
 ## Examples
 
