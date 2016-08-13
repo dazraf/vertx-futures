@@ -7,10 +7,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 
 import static io.dazraf.vertx.futures.FutureChain.*;
-import static io.dazraf.vertx.futures.tuple.Tuple.all;
+import static io.dazraf.vertx.futures.tuple.Tuple.*;
 import static io.vertx.core.Future.succeededFuture;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import static org.slf4j.LoggerFactory.*;
 
 public class FutureChainTests {

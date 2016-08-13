@@ -16,11 +16,11 @@ import static org.slf4j.LoggerFactory.*;
 public class FutureChain2<T1, T2> extends FutureChainX<Tuple2<T1, T2>, FutureChain2<T1, T2>> {
   private static final Logger LOG = getLogger(FutureChain2.class);
 
-  public FutureChain2(Future<T1> future1, Future<T2> future2) {
+  FutureChain2(Future<T1> future1, Future<T2> future2) {
     super(Arrays.asList(future1, future2));
   }
 
-  public FutureChain2(Object parent) {
+  FutureChain2(Object parent) {
     super(parent);
   }
 

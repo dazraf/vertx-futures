@@ -29,7 +29,7 @@ public abstract class Tuple<T extends Tuple> {
     return allFutureX(Arrays.asList(f1, f2, f3), Tuple3::new);
   }
 
-
+  // PRIVATE -
 
   private static <T extends Tuple<T>> Future<T> allFutureX(List<Future> futures, Function<CompositeFuture, T> adapter) {
     return CompositeFuture.all(futures).map(adapter);

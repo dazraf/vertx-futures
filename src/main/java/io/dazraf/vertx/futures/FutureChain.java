@@ -9,7 +9,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * @param <T>
+ *
+ * @param <T> The result type of the future
  * @param <Derived> The type of class that actually implements this interface
  */
 public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends Future<T> {

@@ -3,11 +3,11 @@ package io.dazraf.vertx.futures;
 import io.vertx.core.Future;
 
 public class FutureChain1<T> extends FutureChainImpl<T, FutureChain1<T>> {
-  public FutureChain1(Object parent) {
+  FutureChain1(Object parent) {
     super(parent);
   }
 
-  public FutureChain1(Future<T> future) {
+  FutureChain1(Future<T> future) {
     super(future);
     future.setHandler(this);
   }

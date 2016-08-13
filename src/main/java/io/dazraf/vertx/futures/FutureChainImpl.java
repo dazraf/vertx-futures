@@ -20,7 +20,7 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
   implements FutureChain<T, Derived>, Handler<AsyncResult<T>> {
 
   private static final Logger LOG = getLogger(FutureChainImpl.class);
-  protected final Object parent; // used to ensure parent is not GC'd
+  final Object parent; // used to ensure parent is not GC'd
 
   private boolean failed;
   private boolean succeeded;
@@ -29,7 +29,7 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
 
   private final List<Handler<AsyncResult<T>>> handlers = new CopyOnWriteArrayList<>();
 
-  public FutureChainImpl(Object parent) {
+  FutureChainImpl(Object parent) {
     this.parent = parent;
   }
 
