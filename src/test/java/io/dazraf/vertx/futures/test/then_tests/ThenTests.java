@@ -1,7 +1,5 @@
 package io.dazraf.vertx.futures.test.then_tests;
 
-import io.dazraf.vertx.futures.tuple.Tuple2;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -17,8 +15,9 @@ import static org.slf4j.LoggerFactory.*;
 
 public class ThenTests {
   private static final Logger LOG = getLogger(ThenTests.class);
-  private static final String NAME = "Fuzz";
-  private static final int AGE = 45;
+  private static final String NAME = "Jim";
+  private static final int AGE = 40;
+  private static final String ADDRESS = "Norwich";
 
   @Test
   public void oneResultTest() {
@@ -56,31 +55,31 @@ public class ThenTests {
       .onSuccess((Consumer<String>) LOG::info);
   }
 
+  @Test
+  public void threeThenOneTest() {
+    String result =
+    when(getName(), getAge(), getAddress())
+      .peekSuccess((name, age, address) -> LOG.info("peekSuccess: succeeded in getting name '{}' age '{} address {}", name, age, address))
+      .onSuccess((name, age, address) -> LOG.info("onSuccess: succeeded in getting name '{}' age '{} address {}", name, age, address))
+      .then((name, age, address) -> succeededFuture(name + age + address))
+      .result();
+
+    assertThat(result, is (NAME + AGE + ADDRESS));
+  }
+
   private Future<String> composeMessage(String name, Integer age) {
     return succeededFuture("hello " + name + ", you are " + age + " year" + (age > 1 ? "s" : "") + " old");
   }
 
   private Future<String> getName() {
-    // could be async
     return succeededFuture(NAME);
   }
 
-  Future<Integer> getAge() {
+  private Future<Integer> getAge() {
     return succeededFuture(AGE);
   }
 
-  private void foo() {
-    this.<Integer, String> struct2(bar())
-      .accept(this::call);
-  }
-
-  private CompositeFuture bar() {
-    return CompositeFuture.all(succeededFuture(1), succeededFuture("hello"));
-  }
-
-  private <T1, T2> Tuple2<T1, T2> struct2(CompositeFuture future) {
-    return new Tuple2<>(future);
-  }
+  private Future<String> getAddress() { return succeededFuture(ADDRESS); }
 
   private void call(Integer i, String s) {
     LOG.info("{} {}", i, s);

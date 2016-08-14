@@ -19,7 +19,7 @@ public class Tuple3<T1, T2, T3> extends Tuple<Tuple3<T1, T2, T3>> {
     assert(compositeFuture.succeeded());
     this.t1 = compositeFuture.result(0);
     this.t2 = compositeFuture.result(1);
-    this.t3 = compositeFuture.result(1);
+    this.t3 = compositeFuture.result(2);
   }
 
   public T1 getT1() {
