@@ -18,10 +18,12 @@ public class ThenTests {
   private static final String NAME = "Jim";
   private static final int AGE = 40;
   private static final String ADDRESS = "Norwich";
+  public static final int ID = 5;
 
   @Test
   public void oneResultTest() {
-    when(getName())
+    when(getId())
+    .then(this::getName)
       .peekSuccess(t -> assertThat(t, is(NAME)))
       .then(name -> composeMessage(name, 42))
       .onSuccess((Consumer<String>) LOG::info);
@@ -29,7 +31,8 @@ public class ThenTests {
 
   @Test
   public void oneThenOneTest() {
-    when(getName())
+    when(getId())
+      .then(this::getName)
       .peekSuccess(v -> assertThat(v, is(NAME)))
       .then(name -> composeMessage(name, AGE))
       .onSuccess(msg -> assertThat(msg, is(composeMessage(NAME, AGE))))
@@ -38,27 +41,29 @@ public class ThenTests {
 
   @Test
   public void oneThenTwoTest() {
-    when(getName())
-      .peekSuccess(v -> assertThat(v, is(NAME)))
-      .then2(name -> all(getName(), getAge()))
-      .peekSuccess(tuple  -> assertThat(tuple, is(all(getName(), getAge()))))
+    when(getId())
+      .then2(id -> all(getName(id), getAge(id)))
+      .peekSuccess(tuple  -> assertThat(tuple, is(all(getName(ID), getAge(ID)))))
       .then(this::composeMessage)
       .onSuccess((Consumer<String>) LOG::info);
   }
 
   @Test
   public void twoThenOneTest() {
-    when(getName(), getAge())
+    when(getId())
+      .then2(id -> all(getName(id), getAge(id)))
       .peekSuccess((name, age) -> LOG.info("peekSuccess: succeeded in getting name '{}' and age '{}", name, age))
       .onSuccess((name, age) -> LOG.info("onSuccess: succeeded in getting name '{}' and age '{}", name, age))
-      .then(this::composeMessage)
-      .onSuccess((Consumer<String>) LOG::info);
+      .then((name, age) -> composeMessage(name, age))
+      .onSuccess(result -> LOG.info(result))
+      .onFail(cause -> LOG.error("error handler", cause));
   }
 
   @Test
   public void threeThenOneTest() {
     String result =
-    when(getName(), getAge(), getAddress())
+      when(getId())
+      .then3(id -> all(getName(id), getAge(id), getAddress(id)))
       .peekSuccess((name, age, address) -> LOG.info("peekSuccess: succeeded in getting name '{}' age '{} address {}", name, age, address))
       .onSuccess((name, age, address) -> LOG.info("onSuccess: succeeded in getting name '{}' age '{} address {}", name, age, address))
       .then((name, age, address) -> succeededFuture(name + age + address))
@@ -71,15 +76,16 @@ public class ThenTests {
     return succeededFuture("hello " + name + ", you are " + age + " year" + (age > 1 ? "s" : "") + " old");
   }
 
-  private Future<String> getName() {
+  private Future<Integer> getId() { return succeededFuture(ID); }
+  private Future<String> getName(int id) {
     return succeededFuture(NAME);
   }
 
-  private Future<Integer> getAge() {
+  private Future<Integer> getAge(int id) {
     return succeededFuture(AGE);
   }
 
-  private Future<String> getAddress() { return succeededFuture(ADDRESS); }
+  private Future<String> getAddress(int id) { return succeededFuture(ADDRESS); }
 
   private void call(Integer i, String s) {
     LOG.info("{} {}", i, s);

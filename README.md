@@ -2,13 +2,14 @@
 
 ![graph](docs/graph.png)
 
-This is very much __Work In Progress__
+__Work In Progress__
 
 For users of Vert.x in Java.
 
-Helps you write complex, yet legible, asynchronous logic with elegance, efficiency and flair.
+Helps you write legible asynchronous logic with elegance, efficiency and flair.
+No matter how complex the flow.
 
-Inspired by Promises/A+ specification.
+Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 
 ## Goals:
 
@@ -16,10 +17,20 @@ Inspired by Promises/A+ specification.
 * Efficient for developers and computers
 * Ability to create arbitrary compute graphs of futures i.e. ...
 * Join multiple futures together in a type safe manner (using first-class tuples)
-* Proper *Destructuring* of collection of futures into lambdas of equivalent parameters
+* Proper *Destructuring* of composite futures into lambdas of equivalent parameters
 
-## Examples
 
-To follow.
+## Example
+
+```java
+    when(getId())
+      .then2(id -> all(getName(id), getAge(id)))
+      .then((name, age) -> composeMessage(name, age))
+      .onSuccess(result -> LOG.info(result))
+      .onFail(cause -> LOG.error("error handler", cause));
+
+```
+
+... more to follow ...
 
 
