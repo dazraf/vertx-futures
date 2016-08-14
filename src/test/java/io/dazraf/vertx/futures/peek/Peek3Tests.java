@@ -1,4 +1,4 @@
-package io.dazraf.vertx.futures.test.peek_tests;
+package io.dazraf.vertx.futures.peek;
 
 import io.vertx.core.Future;
 import org.junit.Assert;
@@ -7,11 +7,11 @@ import org.junit.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.dazraf.vertx.futures.FutureChain.*;
-import static io.dazraf.vertx.futures.test.TestUtils.*;
+import static io.dazraf.vertx.futures.TestUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-public class PeekTests {
+public class Peek3Tests {
   @Test
   public void thatASuccessfulFutureCanBePeeked() {
     Future<String> aFuture = Future.future(); // defer completion

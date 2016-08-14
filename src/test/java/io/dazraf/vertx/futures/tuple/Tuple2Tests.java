@@ -1,11 +1,10 @@
-package io.dazraf.vertx.futures.test.tuple_tests;
+package io.dazraf.vertx.futures.tuple;
 
-import io.dazraf.vertx.futures.tuple.Tuple2;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.dazraf.vertx.futures.test.TestUtils.*;
+import static io.dazraf.vertx.futures.TestUtils.*;
 import static io.dazraf.vertx.futures.tuple.Tuple.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;

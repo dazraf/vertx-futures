@@ -1,4 +1,4 @@
-package io.dazraf.vertx.futures.test.then_tests;
+package io.dazraf.vertx.futures;
 
 import io.vertx.core.Future;
 import org.junit.Test;
@@ -54,8 +54,8 @@ public class ThenTests {
       .then2(id -> all(getName(id), getAge(id)))
       .peekSuccess((name, age) -> LOG.info("peekSuccess: succeeded in getting name '{}' and age '{}", name, age))
       .onSuccess((name, age) -> LOG.info("onSuccess: succeeded in getting name '{}' and age '{}", name, age))
-      .then((name, age) -> composeMessage(name, age))
-      .onSuccess(result -> LOG.info(result))
+      .then(this::composeMessage)
+      .onSuccess((Consumer<String>) LOG::info)
       .onFail(cause -> LOG.error("error handler", cause));
   }
 

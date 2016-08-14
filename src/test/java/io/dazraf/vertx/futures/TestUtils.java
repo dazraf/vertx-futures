@@ -1,4 +1,4 @@
-package io.dazraf.vertx.futures.test;
+package io.dazraf.vertx.futures;
 
 import io.vertx.core.Future;
 

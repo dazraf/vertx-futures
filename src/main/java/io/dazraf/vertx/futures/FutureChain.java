@@ -10,7 +10,32 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
+ * This is the primary interface for working with these futures.
+ * It provides a set of method categories:
  *
+ * <ul>
+ *
+ *   <li>Factories: these are in the form <code>when(...)</code>.</li>
+ *
+ *   <li>Chaining methods: these allow chaining of functions that return {@link Future}.
+ *   They are in the form <code>when(...)</code></li>
+ *
+ *   <li>Event handlers: {@link #onSuccess} {@link #onFail} {@link #onComplete}.
+ *
+ *   Exceptions from these handlers affect the computation graph.
+ *   There are also specialised forms of these that can de-structure composite futures. More about this later.</li>
+ *
+ *   <li>Peek handlers: {@link #peekSuccess(Consumer)} {@link #peekFail(Consumer)} {@link #peekComplete(Consumer)}
+ *
+ *   Exceptions from these handlers do not affect the computation graph.
+ *   There are also specialised forms of these that can de-structure composite futures. More about this later.</li>
+ *
+ *   <li><code>map</code> functions.</li>
+ *
+ *   <li>{@link #ifFailed(Function)} for conditional handling of flow when a future has failed.</li>
+ * </ul>
+ *
+ * It provides a set of factory methods: {@link FutureChain#when(Future)}
  * @param <T> The result type of the future
  * @param <Derived> The type of class that actually implements this interface
  */
@@ -43,7 +68,7 @@ public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends
   <R> FutureChain1<R> map(Function<T, R> mapFn);
   <R> FutureChain1<R> map(R value);
 
-  // --- Factory methods
+  // --- Factory methods - all of the form when
   static <T> FutureChain1<T> when(Future<T> future) {
     return new FutureChain1<>(future);
   }

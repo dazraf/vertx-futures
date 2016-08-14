@@ -1,11 +1,9 @@
-package io.dazraf.vertx.futures.test.map_tests;
+package io.dazraf.vertx.futures;
 
-import io.dazraf.vertx.futures.FutureChain;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.dazraf.vertx.futures.test.TestUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -14,7 +12,7 @@ public class MapVoidTests {
   public void thatSuccessfullFuture1CanBeMappedToVoid() {
     AtomicInteger counter = new AtomicInteger();
 
-    FutureChain.when(aSucceededFuture())
+    FutureChain.when(TestUtils.aSucceededFuture())
       .onSuccess(counter::incrementAndGet)
       .onFail(() -> fail("should not fail"))
       .mapVoid()
@@ -28,7 +26,7 @@ public class MapVoidTests {
   public void thatFailedFuture1CanBeMappedToVoid() {
     AtomicInteger counter = new AtomicInteger();
 
-    FutureChain.when(aFailedFuture())
+    FutureChain.when(TestUtils.aFailedFuture())
       .onFail(counter::incrementAndGet)
       .onSuccess(() -> fail("should be a failed future"))
       .mapVoid()
