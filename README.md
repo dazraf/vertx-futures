@@ -14,7 +14,6 @@ Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 
 ## Goals:
 
-* Typesafe
 * Efficient: for developers and computers
 * Typesafe *Composition*
 * Typesafe *Destructuring*
