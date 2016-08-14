@@ -7,6 +7,7 @@ __Work In Progress__
 For users of Vert.x in Java.
 
 Helps you write legible asynchronous logic with elegance, efficiency and flair.
+
 No matter how complex the flow.
 
 Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
@@ -14,11 +15,9 @@ Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 ## Goals:
 
 * Typesafe
-* Efficient for developers and computers
-* Ability to create arbitrary compute graphs of futures i.e. ...
-* Join multiple futures together in a type safe manner (using first-class tuples)
-* Proper *Destructuring* of composite futures into lambdas of equivalent parameters
-
+* Efficient: for developers and computers
+* Typesafe *Composition*
+* Typesafe *Destructuring*
 
 ## Example
 
