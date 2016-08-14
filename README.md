@@ -8,8 +8,6 @@ For users of Vert.x in Java.
 
 Helps you write legible asynchronous logic with elegance, efficiency and flair.
 
-No matter how complex the flow.
-
 Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 
 ## Goals:
