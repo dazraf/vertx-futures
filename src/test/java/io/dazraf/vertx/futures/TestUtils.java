@@ -1,6 +1,9 @@
 package io.dazraf.vertx.futures;
 
 import io.vertx.core.Future;
+import io.vertx.ext.unit.TestContext;
+import org.hamcrest.Matcher;
+import org.junit.Assert;
 
 import static io.vertx.core.Future.*;
 
@@ -18,5 +21,13 @@ public class TestUtils {
   }
   public static Future<Object> aFailedFuture() {
     return failedFuture(FAIL_MSG);
+  }
+
+  public static <T> void assertThat(TestContext context, T actual, Matcher<? super T> matcher) {
+    try {
+      Assert.assertThat(actual, matcher);
+    } catch (Throwable err) {
+      context.fail(err);
+    }
   }
 }

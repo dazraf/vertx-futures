@@ -125,7 +125,6 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
     FutureChain2<T1, T2> result = createFuture2();
     thenX(result, thenFn);
     return result;
-
   }
 
   public <T1, T2, T3> FutureChain3<T1, T2, T3> then3(Function<T, Future<Tuple3<T1, T2, T3>>> thenFn) {
@@ -247,20 +246,23 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
   @Override
   public <R> FutureChain1<R> map(Function<T, R> mapFn) {
     FutureChain1<R> result = createFuture1();
-    setHandler(ar -> {
-      if (ar.succeeded()) {
-        try {
-          result.complete(mapFn.apply(ar.result()));
-        } catch(Throwable throwable) {
-          result.fail(throwable);
-        }
-      } else {
-        result.fail(ar.cause());
-      }
-    });
+    mapX(result, mapFn);
     return result;
   }
 
+  @Override
+  public <T1, T2> FutureChain2<T1, T2> map2(Function<T, Tuple2<T1, T2>> mapFn) {
+    FutureChain2<T1, T2> result = createFuture2();
+    mapX(result, mapFn);
+    return result;
+  }
+
+  @Override
+  public <T1, T2, T3> FutureChain3<T1, T2, T3> map3(Function<T, Tuple3<T1, T2, T3>> mapFn) {
+    FutureChain3<T1, T2, T3> result = createFuture3();
+    mapX(result, mapFn);
+    return result;
+  }
 
   @Override
   public <R> FutureChain1<R> map(R value) {
@@ -306,6 +308,22 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
       }
     });
   }
+
+  private <R> void mapX(Future<R> collector, Function<T, R> mapFn) {
+    setHandler(ar -> {
+      if (ar.failed()) {
+        collector.fail((ar.cause()));
+        return;
+      }
+      // success
+      try {
+        collector.complete(mapFn.apply(ar.result()));
+      } catch (Throwable err) {
+        collector.fail(err);
+      }
+    });
+  }
+
 
   void ifFailedX(Future<T> collector, Function<Throwable, Future<T>> ifFailedFn) {
     setHandler(ar -> {

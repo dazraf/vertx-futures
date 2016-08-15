@@ -11,14 +11,14 @@ import java.util.function.Supplier;
 
 /**
  * This is the primary interface for working with these futures.
- * It provides a set of method categories:
+ * It provides the following method categories:
  *
  * <ul>
  *
- *   <li>Factories: these are in the form <code>when(...)</code>.</li>
+ *   <li>Factories: these are in the form {@link #when(Future)}, {@link #when(Future, Future)} etc </li>
  *
  *   <li>Chaining methods: these allow chaining of functions that return {@link Future}.
- *   They are in the form <code>when(...)</code></li>
+ *    They are in the form {@link #then(Function)}, {@link #then2(Function)} etc</li>
  *
  *   <li>Event handlers: {@link #onSuccess} {@link #onFail} {@link #onComplete}.
  *
@@ -66,6 +66,10 @@ public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends
 
   FutureChain1<Void> mapVoid();
   <R> FutureChain1<R> map(Function<T, R> mapFn);
+
+  <T1, T2> FutureChain2<T1, T2> map2(Function<T, Tuple2<T1, T2>> mapFn);
+  <T1, T2, T3> FutureChain3<T1, T2, T3> map3(Function<T, Tuple3<T1, T2, T3>> mapFn);
+
   <R> FutureChain1<R> map(R value);
 
   // --- Factory methods - all of the form when

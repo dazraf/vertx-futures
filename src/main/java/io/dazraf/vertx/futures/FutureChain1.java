@@ -16,5 +16,4 @@ public class FutureChain1<T> extends FutureChainImpl<T, FutureChain1<T>> {
   protected FutureChain1<T> create() {
     return new FutureChain1<>((Object)this);
   }
-
 }
