@@ -14,7 +14,7 @@ Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 
 * Efficient: for developers and computers
 * Typesafe *Composition*
-* Typesafe *Destructuring*
+* Typesafe *Decomposition*
 * Simple API: *when*, *then*, *onSuccess*, *onFail*, *onComplete*, *peek*, *map*
 * Keeps with `io.vertx.core.Future` naming convention 
 
