@@ -16,10 +16,9 @@ public class HttpFutures {
 
   /**
    * Wrap a {@link HttpClientRequest} as a {@link Future Future&lt;HttpClientResponse&gt;}
-   * The returned object has all the capabilities and methods of a {@link HttpClientRequest}
-   *
+   * The returned object has all the capabilities and methods of a {@link HttpClientRequest}.
+   *<br><br>
    * This means that we can use this function like this to chain http operations:
-   *
    * <br><br>
    * e.g.
    * <pre>
@@ -32,8 +31,8 @@ public class HttpFutures {
    * }
    * </pre>
    *
-   * @param request the HttpClientRequest as created by methods such as io.vertx.core.http.HttpClient#get(String)
-   * @return An object that implements both Future_HttpClientResponse_ and implements all methods of HttpClientRequest
+   * @param request the HttpClientRequest as created by methods such as {@link io.vertx.core.http.HttpClient#get(String)}
+   * @return An object that implements both {@link Future Future&lt;HttpClientResponse&gt;} and implements all methods of {@link HttpClientRequest}
    */
   public static HttpClientRequestWithFutureResponse future(HttpClientRequest request) {
     return new HttpClientRequestWithFutureResponse(request);

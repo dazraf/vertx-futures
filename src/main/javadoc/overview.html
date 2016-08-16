@@ -10,7 +10,17 @@
 
 <h2>1. Getting started with some examples</h2>
 
-TO DO:
+<pre>
+  import static io.dazraf.vertx.futures.FutureChain.*;
+  import static io.dazraf.vertx.futures.http.HttpFutures.*;
+  // ...
+
+  when(future(httpClient.get("/")).end())
+    .onSuccess(HttpFutures::checkHttpSuccess)
+    .then(response -> bodyObject(response))
+    .onSuccess(body -> assertThat(context, body.containsKey("time"), is(true)))
+    .onFail((Runnable) context::fail);
+</pre>
 
 <h2>2. FutureChain: The shape of the API</h2>
 

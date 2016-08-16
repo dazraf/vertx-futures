@@ -1,6 +1,6 @@
 # vertx-futures
 
-![graph](docs/graph.png)
+![graph](assets/graph.png)
 
 __Work In Progress__
 
@@ -15,8 +15,7 @@ Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 ## Goals:
 
 * Efficient: for developers and computers
-* Typesafe *Composition*
-* Typesafe *Decomposition*
+* Typesafe *Composition* **and** *Decomposition*
 * Simple API: *when*, *then*, *onSuccess*, *onFail*, *onComplete*, *peek*, *map*
 * Keeps with `io.vertx.core.Future` naming convention 
 
@@ -31,6 +30,5 @@ Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 
 ```
 
-... more to follow ...
-
+For more, please refer to the [Java Docs](http://www.dazraf.io/vertx-futures/).
 
