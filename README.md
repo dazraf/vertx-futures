@@ -10,6 +10,8 @@ Helps you write legible asynchronous logic with elegance, efficiency and flair.
 
 Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 
+[Java Docs](http://www.dazraf.io/vertx-futures/)
+
 ## Goals:
 
 * Efficient: for developers and computers
