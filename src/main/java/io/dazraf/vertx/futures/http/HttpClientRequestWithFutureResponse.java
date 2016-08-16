@@ -12,6 +12,36 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpVersion;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+
+// * <p><ol>
+//   * <li>wrap an existing {@link HttpClientRequest}</li>
+//  * <li>present all methods specified by {@link HttpClientRequest}</li>
+//  * <li>implement {@link Future<HttpClientResponse>} </li>
+//
+
+
+/**
+ *
+ * Instances of this class:
+ * <ol>
+ *   <li>wrap an existing {@link HttpClientRequest}</li>
+ *   <li>present all methods specified by {@link HttpClientRequest}</li>
+ *   <li>implement {@link Future Future&lt;HttpClientResponse&gt;} </li>
+ * </ol>
+ * <br>
+ * This means that one can use this class to chain http operations.
+ * <br><br>
+ * e.g.
+ * <pre>
+ * {@code
+ * when(future(httpClient.get("/")).end())
+ * .onSuccess(HttpFutures::checkHttpSuccess)
+ * .then(response -> bodyObject(response))
+ * .onSuccess(body -> assertThat(context, body.containsKey("time"), is(true)))
+ * .onFail((Runnable) context::fail);
+ * }
+ * </pre>
+ */
 public class HttpClientRequestWithFutureResponse implements Future<HttpClientResponse>
 {
   private final HttpClientRequest request;
