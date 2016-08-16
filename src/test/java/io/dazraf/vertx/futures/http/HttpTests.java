@@ -72,8 +72,7 @@ public class HttpTests {
       .onSuccess(HttpFutures::checkHttpSuccess)
       .then2(response -> all(succeededFuture(response), bodyObject(response)))
       .onSuccess((response, body) -> assertThat(context, body.containsKey("time"), is(true)))
-      .map((response, body) -> response)
-      .onSuccess(response -> LOG.info("Response {} body checks out", response.statusCode()))
+      .onSuccess((response, body) -> LOG.info("Response {} body checks out: {}", response.statusCode(), body.encode()))
       .onSuccess(async::complete)
       .onFail((Runnable) context::fail);
   }

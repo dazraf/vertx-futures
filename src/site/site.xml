@@ -25,19 +25,16 @@
   <custom>
     <reflowSkin>
       <protocolRelativeURLs>false</protocolRelativeURLs>
-      <theme>default</theme>
+      <theme>bootswatch-spruce</theme>
       <smoothScroll>true</smoothScroll>
       <highlightJs>true</highlightJs>
-      <highlightJsTheme>github</highlightJsTheme>
+      <highlightJsTheme>default</highlightJsTheme>
       <brand>
-        <name>vertx-futures</name>
+        <name>vertx-futures - work in progress</name>
+        <href>index.html</href>
       </brand>
-      <slogan>Write Vert.x async compute graphs with elegance, efficiency and flair.</slogan>
+      <slogan>Write Vert.x asynchronous executions with elegance, efficiency and flair.</slogan>
       <titleTemplate>%2$s | %1$s</titleTemplate>
-      <!--
-      <toc>top</toc>
-      <tocTopMax>6</tocTopMax>
-      -->
       <topNav>Documentation</topNav>
       <bottomNav maxSpan="9">
         <column>Documentation</column>

@@ -2,9 +2,9 @@
 SCRIPT_DIR=`dirname $0`
 echo "script directory: $SCRIPT_DIR"
 pushd "$SCRIPT_DIR/.."
-mvn clean javadoc:javadoc
+mvn site
 popd
-pushd "$SCRIPT_DIR/../target/site/apidocs/"
+pushd "$SCRIPT_DIR/../target/site/"
 git init
 git remote add javadoc https://dazraf@github.com/dazraf/vertx-futures.git
 git fetch --depth=1 javadoc gh-pages

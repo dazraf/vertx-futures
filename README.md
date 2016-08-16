@@ -10,7 +10,7 @@ Helps you write legible asynchronous logic with elegance, efficiency and flair.
 
 Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 
-[Java Docs](http://www.dazraf.io/vertx-futures/)
+Main [Site](http://www.dazraf.io/vertx-futures/)
 
 ## Goals:
 
@@ -30,5 +30,5 @@ Inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 
 ```
 
-For more, please refer to the [Java Docs](http://www.dazraf.io/vertx-futures/).
+For more, please refer to the main [site](http://www.dazraf.io/vertx-futures/).
 
