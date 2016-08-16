@@ -1,23 +1,18 @@
 <project name="vertx-futures">
   <bannerLeft>
     <name>vertx-futures</name>
-    <src>images/graph2.png</src>
-    <href>http://dazraf.github.com/vertx-futures</href>
   </bannerLeft>
-  <bannerRight>
-    <src>images/vertx-futures.gif</src>
-  </bannerRight>
   <body>
-  <links>
-  </links>
+    <links>
+      <item name="Source" href="https://www.github.com/dazraf/vertx-futures"/>
+    </links>
 
-  <menu name="Documentation">
-    <item name="Introduction" href="index.html"/>
-    <item name="JavaDocs" href="apidocs/index.html" target="_blank"/>
-    <item name="Tutorial and Examples" href="tutorial.html"></item>
-    <item name="API Documentation" href="api.html"></item>
-  </menu>
-
+    <menu name="Documentation">
+      <item name="Introduction" href="index.html"/>
+      <item name="JavaDocs" href="apidocs/index.html" target="_blank"/>
+      <item name="Tutorial and Examples" href="tutorial.html"></item>
+      <item name="API Documentation" href="api.html"></item>
+    </menu>
   <!--<menu ref="reports"/>-->
   </body>
 
@@ -26,4 +21,46 @@
     <artifactId>reflow-maven-skin</artifactId>
     <version>1.1.1</version>
   </skin>
+
+  <custom>
+    <reflowSkin>
+      <protocolRelativeURLs>false</protocolRelativeURLs>
+      <theme>default</theme>
+      <smoothScroll>true</smoothScroll>
+      <highlightJs>true</highlightJs>
+      <highlightJsTheme>github</highlightJsTheme>
+      <brand>
+        <name>vertx-futures</name>
+      </brand>
+      <slogan>Write Vert.x async compute graphs with elegance, efficiency and flair.</slogan>
+      <titleTemplate>%2$s | %1$s</titleTemplate>
+      <!--
+      <toc>top</toc>
+      <tocTopMax>6</tocTopMax>
+      -->
+      <topNav>Documentation</topNav>
+      <bottomNav maxSpan="9">
+        <column>Documentation</column>
+      </bottomNav>
+      <bottomDescription>
+      </bottomDescription>
+      <pages>
+        <index project="project-id">
+          <shortTitle>Welcome</shortTitle>
+          <breadcrumbs>false</breadcrumbs>
+          <toc>false</toc>
+          <sections>
+            <carousel />
+            <body />
+            <sidebar />
+            <thumbs>2</thumbs>
+            <columns>3</columns>
+          </sections>
+        </index>
+        <developer-info>
+          <toc>sidebar</toc>
+        </developer-info>
+      </pages>
+    </reflowSkin>
+  </custom>
 </project>
