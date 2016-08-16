@@ -6,14 +6,30 @@
 </head>
 <body>
 
-<h1><a href="https://github.com/dazraf/vertx-futures" target="_blank">Vert.x Futures</a> API documentation.</h1>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<h1><a href="https://github.com/dazraf/vertx-futures" target="_blank">Vert.x Futures</a> Overview</h1>
+
 
 <h2>1. Getting started with some examples</h2>
 
+<h3>1.1. Useful static imports</h3>
+
+<code>vertx-futures</code> has a small number of classes for its entry-points. For legibility, it's probably best to
+statically import these.
+
 <pre>
-  import static io.dazraf.vertx.futures.FutureChain.*;
-  import static io.dazraf.vertx.futures.http.HttpFutures.*;
-  // ...
+  <code class="java">
+  import static io.dazraf.vertx.tuple.Tuple.*; // for creating typesafe structures of results
+  import static io.dazraf.vertx.futures.FutureChain.*; // for creating graphs of futures
+  import static io.dazraf.vertx.futures.http.HttpFutures.*; // for working with vert.x http APIs
+  </code>
+</pre>
+
+<h3>1.2. Calling a webservice and parsing the body to a JsonObject</h3>
+
+<pre>
 
   when(future(httpClient.get("/")).end())
     .onSuccess(HttpFutures::checkHttpSuccess)
@@ -22,11 +38,57 @@
     .onFail((Runnable) context::fail);
 </pre>
 
-<h2>2. FutureChain: The shape of the API</h2>
+Here, we write a unit test to call a Vert.x <code>HttpClient</code> with request to <code>GET /</code>.<br>
+We convert the <code>HttpClientRequest</code> into a <code>Future</code> using the <a href="io/dazraf/vertx/futures/http/HttpFutures.html#future-io.vertx.core.http.HttpClientRequest-"><code>future()</code> factory</a><br>
+Once we have a <code>Future</code> we can start chaining its state to subsequent operations.<br>
+In this chase, if the http server responds, we:
+<ul>
+  <li>check for a successful status code</li>
+  <li>convert the body to a <code>JsonObject</code></li>
+  <li>check that the structure of the <code>JsonObject</code> is sound</li>
+  <li>if anywhere in the above code we have any failures untrapped errors, we fail the tests</li>
+</ul>
+
+<h3>1.3. Taking it to a Galaxy Far Far Away ... </h3>
+
+We're going to take the above and use it to access the awesome <a href="http://swapi.co" target="_blank">Star Wars API</a>.
+<br>
+We'll setup our test so that the <code>HttpClient</code> is set to use <code>http://swapi.co</code> as the default host and port.
+<br>
+Then we'll encapsulate what we learn above as a handy function to retrieve the JsonObject from any GET request:
+
+<pre>
+    private Future<JsonObject> getJsonObject(String resource) {
+    return when(future(httpClient.get(resource)).end())
+      .onSuccess(HttpFutures::checkHttpSuccess)
+      .then(HttpFutures::bodyObject);
+  }
+</pre>
+
+To show how that works, we'll write a test to get a list of all Star Wars film titles.
+
+<pre>
+  @Test
+  public void getFilms(TestContext testContext) {
+    Async async = testContext.async();
+    when(getJsonObject("/api/films/"))
+      .map(jo -> jo.getJsonArray("results").stream()
+        .map(obj -> ((JsonObject)obj))
+        .map(obj -> obj.getString("title"))
+        .collect(Collectors.toList()))
+      .peekSuccess(list -> list.forEach(LOG::info))
+      .onSuccess(() -> async.complete())
+      .onFail(err -> testContext.fail(err));
+  }
+</pre>
+
+
+Let's encapsulate a handy function to get any resource:
+<h2>FutureChain: The shape of the API</h2>
 
 TO DO:
 
-<h2>3. Useful places to visit in the codebase</h2>
+<h2>Useful places to visit in the codebase</h2>
 
 TO DO:
 

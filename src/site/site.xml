@@ -1,0 +1,29 @@
+<project name="vertx-futures">
+  <bannerLeft>
+    <name>vertx-futures</name>
+    <src>images/graph2.png</src>
+    <href>http://dazraf.github.com/vertx-futures</href>
+  </bannerLeft>
+  <bannerRight>
+    <src>images/vertx-futures.gif</src>
+  </bannerRight>
+  <body>
+  <links>
+  </links>
+
+  <menu name="Documentation">
+    <item name="Introduction" href="index.html"/>
+    <item name="JavaDocs" href="apidocs/index.html" target="_blank"/>
+    <item name="Tutorial and Examples" href="tutorial.html"></item>
+    <item name="API Documentation" href="api.html"></item>
+  </menu>
+
+  <!--<menu ref="reports"/>-->
+  </body>
+
+  <skin>
+    <groupId>lt.velykis.maven.skins</groupId>
+    <artifactId>reflow-maven-skin</artifactId>
+    <version>1.1.1</version>
+  </skin>
+</project>

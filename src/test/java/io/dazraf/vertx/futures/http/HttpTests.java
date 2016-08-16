@@ -1,5 +1,6 @@
 package io.dazraf.vertx.futures.http;
 
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
