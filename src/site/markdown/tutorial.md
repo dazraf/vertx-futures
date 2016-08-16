@@ -49,7 +49,8 @@ together with the original response object using a [`Tuple.all()`](apidocs/io/da
 
 *Please note* 
 
-Broadly speaking, we've only had to focus on the "happy" path. The handling and passing of failure conditions done automatically by the library. 
+Broadly speaking, we've only had to focus on the "happy" path. 
+The handling and passing of failure conditions is carried out automatically by the library. 
 
 We use [`Tuple.all()`](apidocs/io/dazraf/vertx/futures/tuple/Tuple.html#all-T1-T2-) to create a return object that combines both the `request` and the `body`. 
 This is to demonstrate that multiple results can be passed out from one stage to the next; all typesafe!
@@ -86,7 +87,7 @@ Then we'll encapsulate what we discussed above as a handy function to retrieve t
 
 ```
 
-Now, the StarWars API services uses pagination, so we'll need to recursively retrieve all pages:
+Now, the StarWars API uses pagination, so we'll need to recursively retrieve all pages:
 
 ```
   private Future<JsonObject> httpGetJsonObject(String resource) {
