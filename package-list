@@ -1,0 +1,5 @@
+io.dazraf.vertx.futures
+io.dazraf.vertx.futures.consumer
+io.dazraf.vertx.futures.function
+io.dazraf.vertx.futures.http
+io.dazraf.vertx.futures.tuple
