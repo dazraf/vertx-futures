@@ -47,6 +47,19 @@ public class StarwarsTests {
   }
 
   @Test
+  public void getFilms(TestContext testContext) {
+    Async async = testContext.async();
+    when(httpGetJsonObject("/api/films/"))
+      .map(jo -> jo.getJsonArray("results").stream()
+        .map(obj -> ((JsonObject)obj))
+        .map(obj -> obj.getString("title"))
+        .collect(Collectors.toList()))
+      .peekSuccess(list -> list.forEach(LOG::info))
+      .onSuccess(() -> async.complete())
+      .onFail(err -> testContext.fail(err));
+  }
+
+  @Test
   public void getAllStarshipsUsedByResidentsOfTatooine(TestContext testContext) {
     Async async = testContext.async();
     when(findPlanet("Tatooine"), getAllCharacters())
@@ -92,44 +105,42 @@ public class StarwarsTests {
   }
 
   private Future<JsonArray> getAllCharacters() {
-    return getJsonObject("/api/people/")
+    return httpGetJsonObject("/api/people/")
       .map(jo -> jo.getJsonArray("results"));
   }
 
   private Future<JsonArray> getAllPlanets() {
-    return getJsonObject("/api/planets/")
+    return httpGetJsonObject("/api/planets/")
       .map(jo -> jo.getJsonArray("results"));
   }
 
   private Future<JsonArray> getAllStarships() {
-    return getJsonObject("/api/starships/")
+    return httpGetJsonObject("/api/starships/")
       .map(jo -> jo.getJsonArray("results"));
   }
 
-  private Future<JsonObject> getJsonObject(String resource) {
+  private Future<JsonObject> httpGetJsonObject(String resource) {
     return when(future(httpClient.get(resource)).end())
       .onSuccess(HttpFutures::checkHttpSuccess)
       .then(HttpFutures::bodyObject)
-      .then(partialResult -> {
-        String next = partialResult.getString("next");
+      .then(result -> {
+        String next = result.getString("next");
         if (next != null) {
-          final URI uri = URI.create(next);
-          String path = uri.getPath() + "?" + uri.getQuery();
-          return when(getJsonObject(path))
-            .map(remainder -> {
-              partialResult.getJsonArray("results").addAll(remainder.getJsonArray("results"));
-              return partialResult;
-            });
+          return getRemainingPages(result, next);
         } else {
-          return succeededFuture(partialResult);
+          return succeededFuture(result);
         }
       });
   }
 
-  private Future<JsonArray> getJsonArray(String resource) {
-    return when(future(httpClient.get(resource)).end())
-      .onSuccess(HttpFutures::checkHttpSuccess)
-      .then(HttpFutures::bodyArray);
+  private Future<JsonObject> getRemainingPages(JsonObject result, String next) {
+    final URI uri = URI.create(next);
+    String path = uri.getPath() + "?" + uri.getQuery();
+    return when(httpGetJsonObject(path)) //
+      .map(remainder -> {
+        result.getJsonArray("results").addAll(remainder.getJsonArray("results"));
+        return result;
+      });
   }
 
 }
