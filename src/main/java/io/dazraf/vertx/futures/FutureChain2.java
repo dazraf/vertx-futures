@@ -36,6 +36,12 @@ public class FutureChain2<T1, T2> extends FutureChainX<Tuple2<T1, T2>, FutureCha
     return super.map(t -> t.apply(function));
   }
 
+  public <R1, R2> FutureChain2<R1, R2> map2(Function2<T1, T2, Tuple2<R1, R2>> function) {
+    return super.map2(t -> t.apply(function));
+  }
+  public <R1, R2, R3> FutureChain3<R1, R2, R3> map3(Function2<T1, T2, Tuple3<R1, R2, R3>> function) {
+    return super.map3(t -> t.apply(function));
+  }
 
   public <R1> FutureChain1<R1> then(Function2<T1, T2, Future<R1>> function) {
     return super.then(t -> t.apply(function));

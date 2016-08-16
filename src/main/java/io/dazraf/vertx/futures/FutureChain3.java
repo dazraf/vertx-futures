@@ -1,6 +1,7 @@
 package io.dazraf.vertx.futures;
 
 import io.dazraf.vertx.futures.consumer.Consumer3;
+import io.dazraf.vertx.futures.function.Function2;
 import io.dazraf.vertx.futures.function.Function3;
 import io.dazraf.vertx.futures.tuple.Tuple2;
 import io.dazraf.vertx.futures.tuple.Tuple3;
@@ -43,6 +44,17 @@ public class FutureChain3<T1, T2, T3> extends FutureChainX<Tuple3<T1, T2, T3>, F
     FutureChain3<T1, T2, T3> result = new FutureChain3<>(this);
     super.ifFailedX(result, ifFailedFn);
     return result;
+  }
+
+  public <R1> FutureChain1<R1> map(Function3<T1, T2, T3, R1> function) {
+    return super.map(t -> t.apply(function));
+  }
+
+  public <R1, R2> FutureChain2<R1, R2> map2(Function3<T1, T2, T3, Tuple2<R1, R2>> function) {
+    return super.map2(t -> t.apply(function));
+  }
+  public <R1, R2, R3> FutureChain3<R1, R2, R3> map3(Function3<T1, T2, T3, Tuple3<R1, R2, R3>> function) {
+    return super.map3(t -> t.apply(function));
   }
 
   @Override
