@@ -34,7 +34,7 @@
         <href>index.html</href>
       </brand>
       <slogan>Write Vert.x asynchronous executions with elegance, efficiency and flair.</slogan>
-      <titleTemplate>%2$s | %1$s</titleTemplate>
+      <titleTemplate>%1$s</titleTemplate>
       <topNav>Documentation</topNav>
       <bottomNav maxSpan="9">
         <column>Documentation</column>
