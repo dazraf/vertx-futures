@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.dazraf.vertx.futures.FutureChain.*;
+import static io.dazraf.vertx.futures.Futures.*;
 import static io.dazraf.vertx.futures.http.HttpFutures.future;
 import static io.vertx.core.Future.succeededFuture;
 import static org.slf4j.LoggerFactory.*;

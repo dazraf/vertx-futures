@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.dazraf.vertx.futures.FutureChain.*;
+import static io.dazraf.vertx.futures.Futures.*;
 import static io.dazraf.vertx.futures.TestUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;

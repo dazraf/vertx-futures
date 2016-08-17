@@ -12,7 +12,7 @@ public class MapVoidTests {
   public void thatSuccessfullFuture1CanBeMappedToVoid() {
     AtomicInteger counter = new AtomicInteger();
 
-    FutureChain.when(TestUtils.aSucceededFuture())
+    Futures.when(TestUtils.aSucceededFuture())
       .onSuccess(counter::incrementAndGet)
       .onFail(() -> fail("should not fail"))
       .mapVoid()
@@ -26,7 +26,7 @@ public class MapVoidTests {
   public void thatFailedFuture1CanBeMappedToVoid() {
     AtomicInteger counter = new AtomicInteger();
 
-    FutureChain.when(TestUtils.aFailedFuture())
+    Futures.when(TestUtils.aFailedFuture())
       .onFail(counter::incrementAndGet)
       .onSuccess(() -> fail("should be a failed future"))
       .mapVoid()

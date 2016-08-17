@@ -3,7 +3,7 @@ package io.dazraf.vertx.futures.destructure;
 import io.dazraf.vertx.futures.tuple.Tuple2;
 import org.junit.Test;
 
-import static io.dazraf.vertx.futures.FutureChain.*;
+import static io.dazraf.vertx.futures.Futures.*;
 import static io.dazraf.vertx.futures.TestUtils.*;
 import static io.dazraf.vertx.futures.tuple.Tuple.*;
 import static org.hamcrest.CoreMatchers.*;

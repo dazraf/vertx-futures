@@ -7,7 +7,7 @@ For legibility, it's best to statically import these.
 
 ```
   import static io.dazraf.vertx.tuple.Tuple.*; // for creating typesafe structures of results
-  import static io.dazraf.vertx.futures.FutureChain.*; // for creating graphs of futures
+  import static io.dazraf.vertx.futures.Futures.*; // for creating graphs of futures
   import static io.dazraf.vertx.futures.http.HttpFutures.*; // for working with vert.x http APIs
 ```
 
@@ -58,13 +58,13 @@ This is to demonstrate that multiple results can be passed out from one stage to
 Also, the above example shows the use of `onSuccess` and `peekSuccess`. 
 In the API these methods work in exactly the same way, except that:
 
-* [`onSuccess`](apidocs/io/dazraf/vertx/futures/FutureChain.html#onSuccess-java.util.function.Consumer-), 
-[`onFail`](apidocs/io/dazraf/vertx/futures/FutureChain.html#onFail-java.util.function.Consumer-),
-[`onComplete`](apidocs/io/dazraf/vertx/futures/FutureChain.html#onComplete-java.util.function.Consumer-) etc 
+* [`onSuccess`](apidocs/io/dazraf/vertx/futures/Futures.html#onSuccess-java.util.function.Consumer-), 
+[`onFail`](apidocs/io/dazraf/vertx/futures/Futures.html#onFail-java.util.function.Consumer-),
+[`onComplete`](apidocs/io/dazraf/vertx/futures/Futures.html#onComplete-java.util.function.Consumer-) etc 
 will cause the flow to fail if the passed in handler function throws an exception
-* [`peekSuccess`](apidocs/io/dazraf/vertx/futures/FutureChain.html#peekSuccess-java.util.function.Consumer-), 
-[`peekFail`](apidocs/io/dazraf/vertx/futures/FutureChain.html#peekFail-java.util.function.Consumer-), 
-[`peekComplete`](apidocs/io/dazraf/vertx/futures/FutureChain.html#peekComplete-java.util.function.Consumer-) etc
+* [`peekSuccess`](apidocs/io/dazraf/vertx/futures/Futures.html#peekSuccess-java.util.function.Consumer-), 
+[`peekFail`](apidocs/io/dazraf/vertx/futures/Futures.html#peekFail-java.util.function.Consumer-), 
+[`peekComplete`](apidocs/io/dazraf/vertx/futures/Futures.html#peekComplete-java.util.function.Consumer-) etc
 will silently ignore any exception in the handler function (in fact, these are `trace`d to the logs, if enabled as such).
 
 

@@ -17,10 +17,10 @@ import java.util.function.Function;
 
 import static org.slf4j.LoggerFactory.*;
 
-public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Derived>>
-  implements FutureChain<T, Derived>, Handler<AsyncResult<T>> {
+public abstract class FuturesImpl<T, Derived extends FuturesImpl<T, Derived>>
+  implements Futures<T, Derived>, Handler<AsyncResult<T>> {
 
-  private static final Logger LOG = getLogger(FutureChainImpl.class);
+  private static final Logger LOG = getLogger(FuturesImpl.class);
   final Object parent; // used to ensure parent is not GC'd
 
   private boolean failed;
@@ -30,7 +30,7 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
 
   private final List<Handler<AsyncResult<T>>> handlers = new CopyOnWriteArrayList<>();
 
-  FutureChainImpl(Object parent) {
+  FuturesImpl(Object parent) {
     this.parent = parent;
   }
 
@@ -115,28 +115,28 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
   // --- then() functions
 
   @Override
-  public <R> FutureChain1<R> then(Function<T, Future<R>> thenFn) {
-    FutureChain1<R> result = createFuture1();
+  public <R> Futures1<R> then(Function<T, Future<R>> thenFn) {
+    Futures1<R> result = createFuture1();
     thenX(result, thenFn);
     return result;
   }
 
   @Override
-  public <T1, T2> FutureChain2<T1, T2> then2(Function<T, Future<Tuple2<T1, T2>>> thenFn) {
-    FutureChain2<T1, T2> result = createFuture2();
+  public <T1, T2> Futures2<T1, T2> then2(Function<T, Future<Tuple2<T1, T2>>> thenFn) {
+    Futures2<T1, T2> result = createFuture2();
     thenX(result, thenFn);
     return result;
   }
 
-  public <T1, T2, T3> FutureChain3<T1, T2, T3> then3(Function<T, Future<Tuple3<T1, T2, T3>>> thenFn) {
-    FutureChain3<T1, T2, T3> result = createFuture3();
+  public <T1, T2, T3> Futures3<T1, T2, T3> then3(Function<T, Future<Tuple3<T1, T2, T3>>> thenFn) {
+    Futures3<T1, T2, T3> result = createFuture3();
     thenX(result, thenFn);
     return result;
   }
 
   @Override
-  public <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> then4(Function<T, Future<Tuple4<T1, T2, T3, T4>>> thenFn) {
-    FutureChain4<T1, T2, T3, T4> result = createFuture4();
+  public <T1, T2, T3, T4> Futures4<T1, T2, T3, T4> then4(Function<T, Future<Tuple4<T1, T2, T3, T4>>> thenFn) {
+    Futures4<T1, T2, T3, T4> result = createFuture4();
     thenX(result, thenFn);
     return result;
   }
@@ -144,8 +144,8 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
   // -- method to return another future, if failed
 
   @Override
-  public FutureChain1<T> ifFailed(Function<Throwable, Future<T>> ifFailedFn) {
-    FutureChain1<T> result = createFuture1();
+  public Futures1<T> ifFailed(Function<Throwable, Future<T>> ifFailedFn) {
+    Futures1<T> result = createFuture1();
     ifFailedX(result, ifFailedFn);
     return result;
   }
@@ -239,8 +239,8 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
   }
 
   @Override
-  public FutureChain1<Void> mapVoid() {
-    FutureChain1<Void> result = createFuture1();
+  public Futures1<Void> mapVoid() {
+    Futures1<Void> result = createFuture1();
     addHandler(ar -> {
       if (ar.failed()) {
         result.fail(ar.cause());
@@ -252,36 +252,36 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
   }
 
   @Override
-  public <R> FutureChain1<R> map(Function<T, R> mapFn) {
-    FutureChain1<R> result = createFuture1();
+  public <R> Futures1<R> map(Function<T, R> mapFn) {
+    Futures1<R> result = createFuture1();
     mapX(result, mapFn);
     return result;
   }
 
   @Override
-  public <T1, T2> FutureChain2<T1, T2> map2(Function<T, Tuple2<T1, T2>> mapFn) {
-    FutureChain2<T1, T2> result = createFuture2();
+  public <T1, T2> Futures2<T1, T2> map2(Function<T, Tuple2<T1, T2>> mapFn) {
+    Futures2<T1, T2> result = createFuture2();
     mapX(result, mapFn);
     return result;
   }
 
   @Override
-  public <T1, T2, T3> FutureChain3<T1, T2, T3> map3(Function<T, Tuple3<T1, T2, T3>> mapFn) {
-    FutureChain3<T1, T2, T3> result = createFuture3();
+  public <T1, T2, T3> Futures3<T1, T2, T3> map3(Function<T, Tuple3<T1, T2, T3>> mapFn) {
+    Futures3<T1, T2, T3> result = createFuture3();
     mapX(result, mapFn);
     return result;
   }
 
   @Override
-  public <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> map4(Function<T, Tuple4<T1, T2, T3, T4>> mapFn) {
-    FutureChain4<T1, T2, T3, T4> result = createFuture4();
+  public <T1, T2, T3, T4> Futures4<T1, T2, T3, T4> map4(Function<T, Tuple4<T1, T2, T3, T4>> mapFn) {
+    Futures4<T1, T2, T3, T4> result = createFuture4();
     mapX(result, mapFn);
     return result;
   }
 
   @Override
-  public <R> FutureChain1<R> map(R value) {
-    FutureChain1<R> result = createFuture1();
+  public <R> Futures1<R> map(R value) {
+    Futures1<R> result = createFuture1();
     setHandler(ar -> {
       if (ar.succeeded()) {
         try {
@@ -390,20 +390,20 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
   }
 
 
-  private <T1> FutureChain1<T1> createFuture1() {
-    return new FutureChain1<>((Object)this);
+  private <T1> Futures1<T1> createFuture1() {
+    return new Futures1<>((Object)this);
   }
 
-  private <T1, T2> FutureChain2<T1, T2> createFuture2() {
-    return new FutureChain2<>(this);
+  private <T1, T2> Futures2<T1, T2> createFuture2() {
+    return new Futures2<>(this);
   }
 
-  private <T1, T2, T3> FutureChain3<T1, T2, T3> createFuture3() {
-    return new FutureChain3<>(this);
+  private <T1, T2, T3> Futures3<T1, T2, T3> createFuture3() {
+    return new Futures3<>(this);
   }
 
-  private <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> createFuture4() {
-    return new FutureChain4<>(this);
+  private <T1, T2, T3, T4> Futures4<T1, T2, T3, T4> createFuture4() {
+    return new Futures4<>(this);
   }
 
 }

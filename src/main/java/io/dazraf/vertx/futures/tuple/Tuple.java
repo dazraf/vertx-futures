@@ -1,5 +1,6 @@
 package io.dazraf.vertx.futures.tuple;
 
+import io.dazraf.vertx.futures.FuturesX;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Base class for all Tuples. Essentially here to ensure type safety in classes such as {@link io.dazraf.vertx.futures.FutureChainX}.
+ * Base class for all Tuples. Essentially here to ensure type safety in classes such as {@link FuturesX}.
  * In addition provides the factory functions for creating Tuples from futures or intrinsic values.
  * @param <T> the type that is derived from this class.
  */

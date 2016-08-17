@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.dazraf.vertx.futures.FutureChain.*;
+import static io.dazraf.vertx.futures.Futures.*;
 import static io.dazraf.vertx.futures.tuple.Tuple.*;
 import static io.vertx.core.Future.future;
 import static io.vertx.core.Future.succeededFuture;

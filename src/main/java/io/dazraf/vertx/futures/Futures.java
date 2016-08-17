@@ -36,11 +36,11 @@ import java.util.function.Supplier;
  *   <li>{@link #ifFailed(Function)} for conditional handling of flow when a future has failed.</li>
  * </ul>
  *
- * It provides a set of factory methods: {@link FutureChain#when(Future)}
+ * It provides a set of factory methods: {@link Futures#when(Future)}
  * @param <T> The result type of the future
  * @param <Derived> The type of class that actually implements this interface
  */
-public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends Future<T> {
+public interface Futures<T, Derived extends Futures<T, Derived>> extends Future<T> {
 
   // receive the result, error, or both
   // the given state is passed through to the subsequent listeners in the graph
@@ -58,34 +58,34 @@ public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends
   Derived peekComplete(Consumer<AsyncResult<T>> consumer);
 
   // given a success, return another future
-  <R> FutureChain1<R> then(Function<T, Future<R>> thenFn);
-  <T1, T2> FutureChain2<T1, T2> then2(Function<T, Future<Tuple2<T1, T2>>> thenFn);
-  <T1, T2, T3> FutureChain3<T1, T2, T3> then3(Function<T, Future<Tuple3<T1, T2, T3>>> thenFn);
-  <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> then4(Function<T, Future<Tuple4<T1, T2, T3, T4>>> thenFn);
+  <R> Futures1<R> then(Function<T, Future<R>> thenFn);
+  <T1, T2> Futures2<T1, T2> then2(Function<T, Future<Tuple2<T1, T2>>> thenFn);
+  <T1, T2, T3> Futures3<T1, T2, T3> then3(Function<T, Future<Tuple3<T1, T2, T3>>> thenFn);
+  <T1, T2, T3, T4> Futures4<T1, T2, T3, T4> then4(Function<T, Future<Tuple4<T1, T2, T3, T4>>> thenFn);
 
   // if failed, then return another future
-  FutureChain1<T> ifFailed(Function<Throwable, Future<T>> whenFn);
+  Futures1<T> ifFailed(Function<Throwable, Future<T>> whenFn);
 
-  FutureChain1<Void> mapVoid();
+  Futures1<Void> mapVoid();
 
-  <R> FutureChain1<R> map(R value);
-  <R> FutureChain1<R> map(Function<T, R> mapFn);
-  <T1, T2> FutureChain2<T1, T2> map2(Function<T, Tuple2<T1, T2>> mapFn);
-  <T1, T2, T3> FutureChain3<T1, T2, T3> map3(Function<T, Tuple3<T1, T2, T3>> mapFn);
-  <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> map4(Function<T, Tuple4<T1, T2, T3, T4>> mapFn);
+  <R> Futures1<R> map(R value);
+  <R> Futures1<R> map(Function<T, R> mapFn);
+  <T1, T2> Futures2<T1, T2> map2(Function<T, Tuple2<T1, T2>> mapFn);
+  <T1, T2, T3> Futures3<T1, T2, T3> map3(Function<T, Tuple3<T1, T2, T3>> mapFn);
+  <T1, T2, T3, T4> Futures4<T1, T2, T3, T4> map4(Function<T, Tuple4<T1, T2, T3, T4>> mapFn);
 
 
   // --- Factory methods - all of the form when
-  static <T> FutureChain1<T> when(Future<T> future) {
-    return new FutureChain1<>(future);
+  static <T> Futures1<T> when(Future<T> future) {
+    return new Futures1<>(future);
   }
 
-  static <T1, T2> FutureChain2<T1, T2> when(Future<T1> future1, Future<T2> future2) {
-    return new FutureChain2<>(future1, future2);
+  static <T1, T2> Futures2<T1, T2> when(Future<T1> future1, Future<T2> future2) {
+    return new Futures2<>(future1, future2);
   }
 
-  static <T1, T2, T3> FutureChain3<T1, T2, T3> when(Future<T1> future1, Future<T2> future2, Future<T3> future3) {
-    return new FutureChain3<>(future1, future2, future3);
+  static <T1, T2, T3> Futures3<T1, T2, T3> when(Future<T1> future1, Future<T2> future2, Future<T3> future3) {
+    return new Futures3<>(future1, future2, future3);
   }
 
 
@@ -98,6 +98,6 @@ public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends
   default Derived peekSuccess(Runnable runnable) { return peekSuccess(t -> runnable.run()); }
   default Derived peekFail(Runnable runnable) { return peekFail(t -> runnable.run()); }
   default Derived peekComplete(Runnable runnable) { return peekComplete(t -> runnable.run()); }
-  default FutureChain1<T> ifFailed(Supplier<Future<T>> supplier) { return ifFailed(t -> supplier.get());}
+  default Futures1<T> ifFailed(Supplier<Future<T>> supplier) { return ifFailed(t -> supplier.get());}
 
 }

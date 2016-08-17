@@ -1,6 +1,5 @@
 package io.dazraf.vertx.futures.http;
 
-import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -21,7 +20,7 @@ import org.slf4j.Logger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static io.dazraf.vertx.futures.FutureChain.*;
+import static io.dazraf.vertx.futures.Futures.*;
 import static io.dazraf.vertx.futures.TestUtils.assertThat;
 import static io.dazraf.vertx.futures.http.HttpFutures.*;
 import static io.dazraf.vertx.futures.tuple.Tuple.all;

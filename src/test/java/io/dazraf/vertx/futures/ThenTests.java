@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 
 import java.util.function.Consumer;
 
-import static io.dazraf.vertx.futures.FutureChain.*;
+import static io.dazraf.vertx.futures.Futures.*;
 import static io.dazraf.vertx.futures.tuple.Tuple.*;
 import static io.vertx.core.Future.succeededFuture;
 import static org.hamcrest.CoreMatchers.*;
