@@ -2,6 +2,7 @@ package io.dazraf.vertx.futures;
 
 import io.dazraf.vertx.futures.tuple.Tuple2;
 import io.dazraf.vertx.futures.tuple.Tuple3;
+import io.dazraf.vertx.futures.tuple.Tuple4;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 
@@ -60,17 +61,19 @@ public interface FutureChain<T, Derived extends FutureChain<T, Derived>> extends
   <R> FutureChain1<R> then(Function<T, Future<R>> thenFn);
   <T1, T2> FutureChain2<T1, T2> then2(Function<T, Future<Tuple2<T1, T2>>> thenFn);
   <T1, T2, T3> FutureChain3<T1, T2, T3> then3(Function<T, Future<Tuple3<T1, T2, T3>>> thenFn);
+  <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> then4(Function<T, Future<Tuple4<T1, T2, T3, T4>>> thenFn);
 
   // if failed, then return another future
   FutureChain1<T> ifFailed(Function<Throwable, Future<T>> whenFn);
 
   FutureChain1<Void> mapVoid();
-  <R> FutureChain1<R> map(Function<T, R> mapFn);
-
-  <T1, T2> FutureChain2<T1, T2> map2(Function<T, Tuple2<T1, T2>> mapFn);
-  <T1, T2, T3> FutureChain3<T1, T2, T3> map3(Function<T, Tuple3<T1, T2, T3>> mapFn);
 
   <R> FutureChain1<R> map(R value);
+  <R> FutureChain1<R> map(Function<T, R> mapFn);
+  <T1, T2> FutureChain2<T1, T2> map2(Function<T, Tuple2<T1, T2>> mapFn);
+  <T1, T2, T3> FutureChain3<T1, T2, T3> map3(Function<T, Tuple3<T1, T2, T3>> mapFn);
+  <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> map4(Function<T, Tuple4<T1, T2, T3, T4>> mapFn);
+
 
   // --- Factory methods - all of the form when
   static <T> FutureChain1<T> when(Future<T> future) {

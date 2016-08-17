@@ -2,6 +2,7 @@ package io.dazraf.vertx.futures;
 
 import io.dazraf.vertx.futures.tuple.Tuple2;
 import io.dazraf.vertx.futures.tuple.Tuple3;
+import io.dazraf.vertx.futures.tuple.Tuple4;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -129,6 +130,13 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
 
   public <T1, T2, T3> FutureChain3<T1, T2, T3> then3(Function<T, Future<Tuple3<T1, T2, T3>>> thenFn) {
     FutureChain3<T1, T2, T3> result = createFuture3();
+    thenX(result, thenFn);
+    return result;
+  }
+
+  @Override
+  public <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> then4(Function<T, Future<Tuple4<T1, T2, T3, T4>>> thenFn) {
+    FutureChain4<T1, T2, T3, T4> result = createFuture4();
     thenX(result, thenFn);
     return result;
   }
@@ -265,6 +273,13 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
   }
 
   @Override
+  public <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> map4(Function<T, Tuple4<T1, T2, T3, T4>> mapFn) {
+    FutureChain4<T1, T2, T3, T4> result = createFuture4();
+    mapX(result, mapFn);
+    return result;
+  }
+
+  @Override
   public <R> FutureChain1<R> map(R value) {
     FutureChain1<R> result = createFuture1();
     setHandler(ar -> {
@@ -387,5 +402,8 @@ public abstract class FutureChainImpl<T, Derived extends FutureChainImpl<T, Deri
     return new FutureChain3<>(this);
   }
 
+  private <T1, T2, T3, T4> FutureChain4<T1, T2, T3, T4> createFuture4() {
+    return new FutureChain4<>(this);
+  }
 
 }
