@@ -23,11 +23,10 @@ Main [Site](http://www.dazraf.io/vertx-futures/)
 
 ```java
     when(getId())
-      .then2(id -> all(getName(id), getAge(id)))
-      .then((name, age) -> composeMessage(name, age))
-      .onSuccess(result -> LOG.info(result))
-      .onFail(cause -> LOG.error("error handler", cause));
-
+        .then(call(id -> when(getName(id), getAge(id))))
+        .then(call((name, age) -> composeMessage(name, age)))
+        .then(run(result -> LOG.info(result)))
+        .then(ifFailedRun(cause -> LOG.error("error handler", cause)));
 ```
 
 For more, please refer to the main [site](http://www.dazraf.io/vertx-futures/).
