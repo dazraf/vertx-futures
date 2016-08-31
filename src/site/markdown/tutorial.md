@@ -5,10 +5,13 @@
 `vertx-futures` has a small number of classes for its entry-points. 
 For legibility, it's best to statically import these.
 
-```
-  import static io.dazraf.vertx.tuple.Tuple.*; // for creating typesafe structures of results
-  import static io.dazraf.vertx.futures.Futures.*; // for creating graphs of futures
-  import static io.dazraf.vertx.futures.http.HttpFutures.*; // for working with vert.x http APIs
+```java
+    import static io.dazraf.vertx.futures.Futures.when;
+    import static io.dazraf.vertx.futures.http.HttpFutures.future;
+    import static io.dazraf.vertx.futures.processors.CallProcessor.*;
+    import static io.dazraf.vertx.futures.processors.MapProcessor.*;
+    import static io.dazraf.vertx.futures.processors.PeekProcessor.*;
+    import static io.dazraf.vertx.futures.processors.RunProcessor.*;
 ```
 
 ---
@@ -21,12 +24,13 @@ For legibility, it's best to statically import these.
     Async async = context.async();
 
     when(future(httpClient.get("/")).end())
-      .onSuccess(HttpFutures::checkHttpSuccess)
-      .then2(response -> all(succeededFuture(response), bodyObject(response)))
-      .onSuccess((response, body) -> assertThat(context, body.containsKey("time"), is(true)))
-      .peekSuccess((response, body) -> LOG.info("Response {} body checks out: {}", response.statusCode(), body.encode())) // 
-      .onSuccess(async::complete) // if succeed to get to this point, complete the test
-      .onFail((Runnable) context::fail); // if anything fails, fails the test
+        .then(run(HttpFutures::checkHttpSuccess))
+        .then(call(response -> all(succeededFuture(response), bodyObject(response))))
+        .then(run((response, body) -> VertxMatcherAssert.assertThat(context, body.containsKey("time"), is(true))))
+        .then(run((response, body) -> LOG
+            .info("Response {} body checks out: {}", response.statusCode(), body.encode())))
+        .then(run(async::complete))
+        .then(ifFailedRun(context::fail));
   }
 ```
 
@@ -55,17 +59,11 @@ The handling and passing of failure conditions is carried out automatically by t
 We use [`Tuple.all()`](apidocs/io/dazraf/vertx/futures/tuple/Tuple.html#all-T1-T2-) to create a return object that combines both the `request` and the `body`. 
 This is to demonstrate that multiple results can be passed out from one stage to the next; all typesafe!
 
-Also, the above example shows the use of `onSuccess` and `peekSuccess`. 
-In the API these methods work in exactly the same way, except that:
-
-* [`onSuccess`](apidocs/io/dazraf/vertx/futures/Futures.html#onSuccess-java.util.function.Consumer-), 
-[`onFail`](apidocs/io/dazraf/vertx/futures/Futures.html#onFail-java.util.function.Consumer-),
-[`onComplete`](apidocs/io/dazraf/vertx/futures/Futures.html#onComplete-java.util.function.Consumer-) etc 
-will cause the flow to fail if the passed in handler function throws an exception
-* [`peekSuccess`](apidocs/io/dazraf/vertx/futures/Futures.html#peekSuccess-java.util.function.Consumer-), 
-[`peekFail`](apidocs/io/dazraf/vertx/futures/Futures.html#peekFail-java.util.function.Consumer-), 
-[`peekComplete`](apidocs/io/dazraf/vertx/futures/Futures.html#peekComplete-java.util.function.Consumer-) etc
-will silently ignore any exception in the handler function (in fact, these are `trace`d to the logs, if enabled as such).
+Also, the above example shows the use of `FutureProcessors`. `vertx-futures` ships with the following:
+* `CallProcessor` - takes the result(s) of the chain and returns another `Future`. The static overloaded method `call` will cover most cases. Any exceptions cause the chain to fail.
+* `MapProcessor` - takes the result(s) and returns a new result (not a `Future`). Any exceptions cause the chain to fail.
+* `PeekProcessor` - takes the result(s) of the chain and performs some set of operations on it, returning no result. An exceptions are ignored.
+* `RunProcessor` - takes the result(s) of the chain and performs some set of operations on it, returning no result. Exceptions will cause the chain to fail.
 
 
 ---
@@ -81,8 +79,8 @@ Then we'll encapsulate what we discussed above as a handy function to retrieve t
 ```
   private Future<JsonObject> httpGetJsonObject(String resource) {
     return when(future(httpClient.get(resource)).end())
-      .onSuccess(HttpFutures::checkHttpSuccess)
-      .then(HttpFutures::bodyObject);
+      .then(run(HttpFutures::checkHttpSuccess))
+      .then(call(HttpFutures::bodyObject));
   }
 
 ```
@@ -92,16 +90,16 @@ Now, the StarWars API uses pagination, so we'll need to recursively retrieve all
 ```
   private Future<JsonObject> httpGetJsonObject(String resource) {
     return when(future(httpClient.get(resource)).end())
-      .onSuccess(HttpFutures::checkHttpSuccess)
-      .then(HttpFutures::bodyObject)
-      .then(result -> {
+      .then(run(HttpFutures::checkHttpSuccess))
+      .then(call(HttpFutures::bodyObject))
+      .then(call(result -> {
         String next = result.getString("next");
         if (next != null) {
           return getRemainingPages(result, next);
         } else {
           return succeededFuture(result);
         }
-      });
+      }));
   }
 
   private Future<JsonObject> getRemainingPages(JsonObject result, String next) {
@@ -122,13 +120,13 @@ To show how that works, we'll write a test to get a list of all Star Wars film t
   public void getFilms(TestContext testContext) {
     Async async = testContext.async();
     when(httpGetJsonObject("/api/films/"))
-      .map(jo -> jo.getJsonArray("results").stream()
+      .then(map(jo -> jo.getJsonArray("results").stream()
         .map(obj -> ((JsonObject)obj))
         .map(obj -> obj.getString("title"))
-        .collect(Collectors.toList()))
-      .peekSuccess(list -> list.forEach(LOG::info))
-      .onSuccess(() -> async.complete())
-      .onFail(err -> testContext.fail(err));
+        .collect(Collectors.toList())))
+      .then(peek(list -> list.forEach(LOG::info)))
+      .then(run(async::complete))
+      .then(ifFailedRun(testContext::fail));
   }
 ```
 

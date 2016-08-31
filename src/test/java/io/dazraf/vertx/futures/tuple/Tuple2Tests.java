@@ -4,10 +4,11 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.dazraf.vertx.futures.TestUtils.*;
-import static io.dazraf.vertx.futures.tuple.Tuple.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static io.dazraf.vertx.futures.TestUtils.RESULT_INT;
+import static io.dazraf.vertx.futures.TestUtils.RESULT_MSG;
+import static io.dazraf.vertx.futures.tuple.Tuple.all;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class Tuple2Tests {
   @Test

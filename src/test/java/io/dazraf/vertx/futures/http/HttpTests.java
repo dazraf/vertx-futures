@@ -1,5 +1,15 @@
 package io.dazraf.vertx.futures.http;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import io.dazraf.vertx.futures.VertxMatcherAssert;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -11,25 +21,21 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import static io.dazraf.vertx.futures.Futures.*;
-import static io.dazraf.vertx.futures.TestUtils.assertThat;
-import static io.dazraf.vertx.futures.http.HttpFutures.*;
+import static io.dazraf.vertx.futures.Futures.when;
+import static io.dazraf.vertx.futures.http.HttpFutures.bodyObject;
+import static io.dazraf.vertx.futures.http.HttpFutures.future;
+import static io.dazraf.vertx.futures.processors.CallProcessor.call;
+import static io.dazraf.vertx.futures.processors.RunProcessor.ifFailedRun;
+import static io.dazraf.vertx.futures.processors.RunProcessor.run;
 import static io.dazraf.vertx.futures.tuple.Tuple.all;
-import static org.hamcrest.CoreMatchers.*;
+import static io.vertx.core.Future.succeededFuture;
+import static org.hamcrest.CoreMatchers.is;
 import static org.slf4j.LoggerFactory.getLogger;
-import static io.vertx.core.Future.*;
 
 @RunWith(VertxUnitRunner.class)
 public class HttpTests {
+
   private static final Logger LOG = getLogger(HttpTests.class);
 
   private Vertx vertx;
@@ -46,13 +52,13 @@ public class HttpTests {
     // TODO: get random available port
 
     this.httpServer = vertx.createHttpServer()
-      .requestHandler(router::accept)
-      .listen(port, context.asyncAssertSuccess());
+        .requestHandler(router::accept)
+        .listen(port, context.asyncAssertSuccess());
 
     this.httpClient = vertx.createHttpClient(
-      new HttpClientOptions()
-        .setDefaultHost("localhost")
-        .setDefaultPort(port)
+        new HttpClientOptions()
+            .setDefaultHost("localhost")
+            .setDefaultPort(port)
     );
   }
 
@@ -68,21 +74,22 @@ public class HttpTests {
     Async async = context.async();
 
     when(future(httpClient.get("/")).end())
-      .onSuccess(HttpFutures::checkHttpSuccess)
-      .then2(response -> all(succeededFuture(response), bodyObject(response)))
-      .onSuccess((response, body) -> assertThat(context, body.containsKey("time"), is(true)))
-      .onSuccess((response, body) -> LOG.info("Response {} body checks out: {}", response.statusCode(), body.encode()))
-      .onSuccess(async::complete)
-      .onFail((Runnable) context::fail);
+        .then(run(HttpFutures::checkHttpSuccess))
+        .then(call(response -> all(succeededFuture(response), bodyObject(response))))
+        .then(run((response, body) -> VertxMatcherAssert.assertThat(context, body.containsKey("time"), is(true))))
+        .then(run((response, body) -> LOG
+            .info("Response {} body checks out: {}", response.statusCode(), body.encode())))
+        .then(run(async::complete))
+        .then(ifFailedRun(context::fail));
   }
 
   private void getData(RoutingContext rc) {
     JsonObject data = new JsonObject();
     data.put("time", LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE));
     rc.response()
-      .setChunked(true)
-      .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-      .end(data.encode());
+        .setChunked(true)
+        .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+        .end(data.encode());
 
   }
 }

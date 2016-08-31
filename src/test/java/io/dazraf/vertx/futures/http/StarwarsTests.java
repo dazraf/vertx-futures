@@ -1,14 +1,5 @@
 package io.dazraf.vertx.futures.http;
 
-import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -22,10 +13,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.dazraf.vertx.futures.Futures.*;
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.VertxUnitRunner;
+
+import static io.dazraf.vertx.futures.Futures.when;
 import static io.dazraf.vertx.futures.http.HttpFutures.future;
+import static io.dazraf.vertx.futures.processors.CallProcessor.*;
+import static io.dazraf.vertx.futures.processors.MapProcessor.*;
+import static io.dazraf.vertx.futures.processors.PeekProcessor.*;
+import static io.dazraf.vertx.futures.processors.RunProcessor.*;
+
 import static io.vertx.core.Future.succeededFuture;
-import static org.slf4j.LoggerFactory.*;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Ignore // Acceptance testing
 @RunWith(VertxUnitRunner.class)
@@ -50,24 +56,24 @@ public class StarwarsTests {
   public void getFilms(TestContext testContext) {
     Async async = testContext.async();
     when(httpGetJsonObject("/api/films/"))
-      .map(jo -> jo.getJsonArray("results").stream()
+      .then(map(jo -> jo.getJsonArray("results").stream()
         .map(obj -> ((JsonObject)obj))
         .map(obj -> obj.getString("title"))
-        .collect(Collectors.toList()))
-      .peekSuccess(list -> list.forEach(LOG::info))
-      .onSuccess(() -> async.complete())
-      .onFail(err -> testContext.fail(err));
+        .collect(Collectors.toList())))
+      .then(peek(list -> list.forEach(LOG::info)))
+      .then(run(async::complete))
+      .then(ifFailedRun(testContext::fail));
   }
 
   @Test
   public void getAllStarshipsUsedByResidentsOfTatooine(TestContext testContext) {
     Async async = testContext.async();
     when(findPlanet("Tatooine"), getAllCharacters())
-      .map((tatooine, characters) -> getResidents(tatooine, characters))
-      .then(residents -> getUniqueStarshipsUsedByResidents(residents, getAllStarships()))
-      .peekSuccess(starships -> starships.forEach(o -> LOG.info(o.toString())))
-      .onSuccess(async::complete)
-      .onFail(err -> testContext.fail(err));
+      .then(map((tatooine, characters) -> getResidents(tatooine, characters)))
+      .then(call(residents -> getUniqueStarshipsUsedByResidents(residents, getAllStarships())))
+      .then(peek(starships -> starships.forEach(o -> LOG.info(o.toString()))))
+      .then(run(async::complete))
+      .then(ifFailedRun(testContext::fail));
   }
 
   private Future<List<JsonObject>> getUniqueStarshipsUsedByResidents(List<JsonObject> residents, Future<JsonArray> starShips) {
@@ -121,16 +127,16 @@ public class StarwarsTests {
 
   private Future<JsonObject> httpGetJsonObject(String resource) {
     return when(future(httpClient.get(resource)).end())
-      .onSuccess(HttpFutures::checkHttpSuccess)
-      .then(HttpFutures::bodyObject)
-      .then(result -> {
+      .then(run(HttpFutures::checkHttpSuccess))
+      .then(call(HttpFutures::bodyObject))
+      .then(call(result -> {
         String next = result.getString("next");
         if (next != null) {
           return getRemainingPages(result, next);
         } else {
           return succeededFuture(result);
         }
-      });
+      }));
   }
 
   private Future<JsonObject> getRemainingPages(JsonObject result, String next) {
@@ -142,5 +148,4 @@ public class StarwarsTests {
         return result;
       });
   }
-
 }

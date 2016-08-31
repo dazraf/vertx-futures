@@ -12,11 +12,11 @@ It simplies complex [`AsyncResult<T>`](http://vertx.io/docs/apidocs/io/vertx/cor
   public void getAllStarshipsUsedByResidentsOfTatooine(TestContext testContext) {
     Async async = testContext.async();
     when(findPlanet("Tatooine"), getAllCharacters())
-      .map((tatooine, characters) -> getResidents(tatooine, characters))
-      .then(residents -> getUniqueStarshipsUsedByResidents(residents, getAllStarships()))
-      .peekSuccess(starships -> starships.forEach(o -> LOG.info(o.toString())))
-      .onSuccess(async::complete)
-      .onFail(err -> testContext.fail(err));
+      .then(map((tatooine, characters) -> getResidents(tatooine, characters)))
+      .then(call(residents -> getUniqueStarshipsUsedByResidents(residents, getAllStarships())))
+      .then(peek(starships -> starships.forEach(o -> LOG.info(o.toString()))))
+      .then(run(async::complete))
+      .then(ifFailedRun(testContext::fail));
   }
 ```
 
@@ -24,5 +24,5 @@ It simplies complex [`AsyncResult<T>`](http://vertx.io/docs/apidocs/io/vertx/cor
 
 * Efficient: for developers and computers
 * Typesafe *Composition* **and** *Decomposition*
-* Simple API: `when`, `then`, `onSuccess`, `onFail`, `onComplete`, `peek`, `map` and `ifFailed`
+* Simple, extensible API: the main interface, `Futures` has only two methods `when` and `then`. 
 * Keeps with the `io.vertx.core.Future` naming and semantics
