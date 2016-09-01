@@ -13,9 +13,8 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import static io.dazraf.vertx.futures.Futures.when;
 import static io.dazraf.vertx.futures.processors.MapProcessor.map;
 import static io.dazraf.vertx.futures.processors.MapProcessor.mapResponse;
-import static io.dazraf.vertx.futures.processors.RunProcessor.ifFailedRun;
-import static io.dazraf.vertx.futures.processors.RunProcessor.run;
-import static io.vertx.core.Future.succeededFuture;
+import static io.dazraf.vertx.futures.processors.RunProcessor.*;
+import static io.vertx.core.Future.*;
 
 @RunWith(VertxUnitRunner.class)
 public class MapProcessorTests {
@@ -86,6 +85,18 @@ public class MapProcessorTests {
         .then(run(result -> context.assertEquals(MSG + MSG, result)))
         .then(run(async::complete))
         .then(ifFailedRun(context::fail));
+  }
+
+  @Test
+  public void mapShouldNotExecuteIfChainFailed(TestContext context) {
+    Async async = context.async();
+    when(failedFuture(MSG))
+      .then(map(s -> {
+        context.fail("should not get here");
+        throw new RuntimeException("failed");
+      }))
+      .then(run((Runnable) context::fail))
+      .then(ifFailedRun(err -> async.complete()));
   }
 
   private Future<String> futureMessage() {
