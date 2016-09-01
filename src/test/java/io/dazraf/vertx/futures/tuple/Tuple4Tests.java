@@ -2,6 +2,8 @@ package io.dazraf.vertx.futures.tuple;
 
 import org.junit.Test;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.dazraf.vertx.futures.TestUtils.*;
@@ -32,5 +34,25 @@ public class Tuple4Tests {
       countdown.decrementAndGet();
     });
     assertThat(countdown.get(), is(0));
+  }
+
+  @Test
+  public void positiveEquality() {
+    assertThat(all(RESULT_MSG, RESULT_INT, RESULT_BOOL, RESULT_MSG), is(all(RESULT_MSG, RESULT_INT, RESULT_BOOL, RESULT_MSG)));
+  }
+
+
+  @Test
+  public void negativeEquality() {
+    assertThat(all(RESULT_INT, RESULT_MSG, RESULT_BOOL, RESULT_MSG), not(all(RESULT_MSG, RESULT_INT, RESULT_BOOL, RESULT_MSG)));
+    assertThat(all(RESULT_INT, RESULT_MSG, RESULT_BOOL, RESULT_MSG), not(all(RESULT_MSG, RESULT_INT, RESULT_BOOL, RESULT_BOOL)));
+  }
+
+  @Test
+  public void hashTest() {
+    Set<Tuple4<String, Integer, Boolean, String>> set = new HashSet<>();
+    Tuple4<String, Integer, Boolean, String> tuple = all(RESULT_MSG, RESULT_INT, RESULT_BOOL, RESULT_MSG);
+    set.add(tuple);
+    assertTrue(set.contains(tuple));
   }
 }
