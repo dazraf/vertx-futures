@@ -21,7 +21,11 @@ public interface MapProcessor<T, R> extends FutureProcessor<T, R> {
     return future -> {
       try {
         return succeededFuture(function.apply(future));
-      } catch (Throwable err) {
+      }
+      catch (WrappedException err) {
+        return failedFuture(err.getCause());
+      }
+      catch (Throwable err) {
         return failedFuture(err);
       }
     };
@@ -33,7 +37,7 @@ public interface MapProcessor<T, R> extends FutureProcessor<T, R> {
       if (future.succeeded()) {
         return function.apply(future.result());
       } else {
-        throw new RuntimeException(future.cause());
+        throw new WrappedException(future.cause());
       }
     });
   }
