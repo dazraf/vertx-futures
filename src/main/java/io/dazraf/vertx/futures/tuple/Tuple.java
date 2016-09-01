@@ -42,6 +42,22 @@ public abstract class Tuple<T extends Tuple> {
   }
 
   /**
+   * Create a {@link Tuple3} from two values
+   * @param t1 The first value for the tuple
+   * @param t2 The second value for the tuple
+   * @param t3 The third value for the tuple
+   * @param t4 The fourth value for the tuple
+   * @param <T1> The type of the first value
+   * @param <T2> The type of the second value
+   * @param <T3> The type of the third value
+   * @param <T4> The type of the fourth value
+   * @return The constructed {@link Tuple4}
+   */
+  public static <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> all(T1 t1, T2 t2, T3 t3, T4 t4) {
+    return new Tuple4<>(t1, t2, t3, t4);
+  }
+
+  /**
    * Given two futures, of types {@link T1} and {@link T2} respectively, returns a Future of {@link Tuple2} for the
    * respective types {@link T1} and {@link T2}
    *
