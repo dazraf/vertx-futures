@@ -99,6 +99,18 @@ public class MapProcessorTests {
       .then(ifFailedRun(err -> async.complete()));
   }
 
+  @Test
+  public void exceptionFromMapIsCorrectlyHandled(TestContext context) {
+    Async async = context.async();
+
+    when(succeededFuture(MSG))
+      .then(map(s -> {
+        throw new RuntimeException("Error");
+      }))
+      .then(run(s -> context.fail("failed")))
+      .then(ifFailedRun(err -> async.complete()));
+  }
+
   private Future<String> futureMessage() {
     return succeededFuture(MSG);
   }
