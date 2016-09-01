@@ -22,7 +22,13 @@ public interface MapProcessor<T, R> extends FutureProcessor<T, R> {
   }
 
   static <T, R> MapProcessor<T, R> map(Function<T, R> function) {
-    return future -> succeededFuture(function.apply(future.result()));
+    return future -> {
+      if (future.succeeded()) {
+        return succeededFuture(function.apply(future.result()));
+      } else {
+        return failedFuture(future.cause());
+      }
+    };
   }
 
   static <T1, T2, R> MapProcessor<Tuple2<T1, T2>, R> map(Function2<T1, T2, R> function) {
