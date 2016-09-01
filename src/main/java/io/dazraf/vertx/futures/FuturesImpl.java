@@ -27,7 +27,7 @@ class FuturesImpl<T> implements Futures<T> {
   @SuppressWarnings("unchecked")
   public static final <T> Futures<T> when(Future<T> future) {
     if (future instanceof Futures) {
-      // if already a Futures perfectly good to reuse and will minimise the
+      // if already a Futures perfectly good to reuse and will minimise GC pressure
       return (Futures<T>) future;
     } else {
       return new FuturesImpl<>(future, future);
