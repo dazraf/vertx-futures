@@ -1,4 +1,4 @@
-package io.dazraf.vertx.futures.tuple;
+package io.dazraf.vertx.tuple;
 
 import org.junit.Test;
 
