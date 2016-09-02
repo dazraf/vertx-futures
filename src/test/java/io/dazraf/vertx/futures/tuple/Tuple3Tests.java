@@ -6,10 +6,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.dazraf.vertx.tuple.Tuple3;
+
 import static io.dazraf.vertx.futures.TestUtils.RESULT_BOOL;
 import static io.dazraf.vertx.futures.TestUtils.RESULT_INT;
 import static io.dazraf.vertx.futures.TestUtils.RESULT_MSG;
-import static io.dazraf.vertx.futures.tuple.Tuple.all;
+import static io.dazraf.vertx.tuple.Tuple.all;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 

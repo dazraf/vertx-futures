@@ -1,10 +1,10 @@
 package io.dazraf.vertx.futures;
 
 import io.dazraf.vertx.futures.processors.FutureProcessor;
-import io.dazraf.vertx.futures.tuple.Tuple;
-import io.dazraf.vertx.futures.tuple.Tuple2;
-import io.dazraf.vertx.futures.tuple.Tuple3;
-import io.dazraf.vertx.futures.tuple.Tuple4;
+import io.dazraf.vertx.tuple.Tuple;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
 import io.vertx.core.Future;
 
 /**

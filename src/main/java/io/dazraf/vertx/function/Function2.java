@@ -1,4 +1,4 @@
-package io.dazraf.vertx.futures.function;
+package io.dazraf.vertx.function;
 
 @FunctionalInterface
 public interface Function2<T1, T2, R> extends FunctionN {

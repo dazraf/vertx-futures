@@ -1,12 +1,12 @@
 package io.dazraf.vertx.futures.processors;
 
 import io.dazraf.vertx.futures.Futures;
-import io.dazraf.vertx.futures.function.Function2;
-import io.dazraf.vertx.futures.function.Function3;
-import io.dazraf.vertx.futures.function.Function4;
-import io.dazraf.vertx.futures.tuple.Tuple2;
-import io.dazraf.vertx.futures.tuple.Tuple3;
-import io.dazraf.vertx.futures.tuple.Tuple4;
+import io.dazraf.vertx.function.Function2;
+import io.dazraf.vertx.function.Function3;
+import io.dazraf.vertx.function.Function4;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;

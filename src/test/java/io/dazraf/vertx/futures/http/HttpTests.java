@@ -28,7 +28,7 @@ import static io.dazraf.vertx.futures.http.HttpFutures.future;
 import static io.dazraf.vertx.futures.processors.CallProcessor.call;
 import static io.dazraf.vertx.futures.processors.RunProcessor.ifFailedRun;
 import static io.dazraf.vertx.futures.processors.RunProcessor.run;
-import static io.dazraf.vertx.futures.tuple.Tuple.all;
+import static io.dazraf.vertx.tuple.Tuple.all;
 import static io.vertx.core.Future.succeededFuture;
 import static org.hamcrest.CoreMatchers.is;
 import static org.slf4j.LoggerFactory.getLogger;
