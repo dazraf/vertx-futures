@@ -1,4 +1,4 @@
-package io.dazraf.vertx.futures;
+package io.dazraf.vertx;
 
 /**
  */

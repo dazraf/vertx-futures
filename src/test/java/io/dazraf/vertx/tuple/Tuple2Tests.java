@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.dazraf.vertx.futures.TestUtils.*;
+import static io.dazraf.vertx.TestUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 

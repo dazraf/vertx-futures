@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static io.vertx.core.Future.*;
 import static java.util.stream.Collectors.*;
@@ -45,6 +46,17 @@ public interface CallProcessor<T, R> extends FutureProcessor<T, R> {
         return failedFuture(error);
       }
     };
+  }
+
+  /**
+   * Given a successfully resolved chain, calls {@code supplier} which returns the next future for the chain {@code Future<R>}
+   * @param supplier
+   * @param <T> the type for the chain preceding this processor
+   * @param <R> the type of result returned by {@code supplier} and that of the chain after this processor
+   * @return the processor
+   */
+  static <T, R> CallProcessor<T, R> call(Supplier<Future<R>> supplier) {
+    return call(result -> supplier.get());
   }
 
   /**

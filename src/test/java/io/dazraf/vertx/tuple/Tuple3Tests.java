@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.dazraf.vertx.futures.TestUtils.RESULT_BOOL;
-import static io.dazraf.vertx.futures.TestUtils.RESULT_INT;
-import static io.dazraf.vertx.futures.TestUtils.RESULT_MSG;
+import static io.dazraf.vertx.TestUtils.RESULT_BOOL;
+import static io.dazraf.vertx.TestUtils.RESULT_INT;
+import static io.dazraf.vertx.TestUtils.RESULT_MSG;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
