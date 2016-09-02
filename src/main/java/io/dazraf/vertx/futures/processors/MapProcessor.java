@@ -17,7 +17,7 @@ import static io.vertx.core.Future.succeededFuture;
  * A {@link FutureProcessor} that maps successful values to a new type {@link R}
  */
 public interface MapProcessor<T, R> extends FutureProcessor<T, R> {
-  static <T, R> MapProcessor<T, R> mapResponse(Function<AsyncResult<T>, R> function) {
+  static <T, R> MapProcessor<T, R> mapOnResponse(Function<AsyncResult<T>, R> function) {
     return future -> {
       try {
         return succeededFuture(function.apply(future));
@@ -33,7 +33,7 @@ public interface MapProcessor<T, R> extends FutureProcessor<T, R> {
 
 
   static <T, R> MapProcessor<T, R> map(Function<T, R> function) {
-    return mapResponse(future -> {
+    return mapOnResponse(future -> {
       if (future.succeeded()) {
         return function.apply(future.result());
       } else {
