@@ -5,7 +5,7 @@ The library helps you write legible asynchronous logic with elegance and efficie
 inspired by the [Promises/A+](https://promisesaplus.com/) specification.
 
 It simplies complex [`AsyncResult<T>`](http://vertx.io/docs/apidocs/io/vertx/core/AsyncResult.html)
-[`Handlers`](http://vertx.io/docs/apidocs/io/vertx/core/Handler.html), to elegant continuations like this:
+[`Handlers`](http://vertx.io/docs/apidocs/io/vertx/core/Handler.html), to fluent flows like this:
 
 ```java
   @Test

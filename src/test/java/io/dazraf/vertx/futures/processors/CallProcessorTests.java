@@ -1,12 +1,9 @@
 package io.dazraf.vertx.futures.processors;
 
-import io.dazraf.vertx.futures.TestUtils;
-import io.dazraf.vertx.futures.VertxMatcherAssert;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import org.hamcrest.CoreMatchers;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +12,10 @@ import java.util.Arrays;
 
 import static io.dazraf.vertx.futures.Futures.*;
 import static io.dazraf.vertx.futures.TestUtils.*;
-import static io.dazraf.vertx.futures.VertxMatcherAssert.assertThat;
+import static io.dazraf.vertx.futures.VertxMatcherAssert.*;
 import static io.dazraf.vertx.futures.processors.CallProcessor.*;
 import static io.dazraf.vertx.futures.processors.RunProcessor.*;
-import static io.vertx.core.Future.*;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 
 @RunWith(VertxUnitRunner.class)
 public class CallProcessorTests {
