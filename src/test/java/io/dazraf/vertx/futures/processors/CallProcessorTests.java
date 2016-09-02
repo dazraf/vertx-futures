@@ -1,5 +1,7 @@
 package io.dazraf.vertx.futures.processors;
 
+import io.dazraf.vertx.futures.Futures;
+import io.vertx.core.Future;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
@@ -10,17 +12,18 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
-import static io.dazraf.vertx.futures.Futures.*;
+import static io.dazraf.vertx.futures.Futures.when;
 import static io.dazraf.vertx.futures.TestUtils.*;
 import static io.dazraf.vertx.futures.VertxMatcherAssert.*;
 import static io.dazraf.vertx.futures.processors.CallProcessor.*;
 import static io.dazraf.vertx.futures.processors.RunProcessor.*;
+import static io.vertx.core.Future.*;
 import static org.hamcrest.CoreMatchers.*;
 
 @RunWith(VertxUnitRunner.class)
 public class CallProcessorTests {
   private static final String MSG = "message";
-  public static final String FAILED = "failed";
+  private static final String FAILED = "failed";
   @ClassRule
   public static RunTestOnContext rule = new RunTestOnContext();
 
@@ -105,9 +108,7 @@ public class CallProcessorTests {
 
     when(succeededFuture(Arrays.asList(1, 2, 3, 4, 5)))
       .then(flatMap(i -> failedFuture(FAILED)))
-      .then(run(result -> {
-        context.fail("should never get here");
-      }))
+      .then(run(result -> context.fail("should never get here")))
       .then(ifFailedRun(err -> {
         assertThat(context, err.getMessage(), is(FAILED));
         async.complete();
