@@ -12,6 +12,7 @@ import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import org.slf4j.Logger;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -83,11 +84,12 @@ public interface CallProcessor<T, R> extends FutureProcessor<T, R> {
    * The resulting {@code List<Future<R>>} is transformed and returned as {@code Future<List<R>>}
    * @param flatMapFunction the function that receives each element of the chain result {@code List<T>}
    *                        and for each returns {@code Future<R>}
+   * @param <L1> the type of the incoming list type
    * @param <T> the type of the elements in the chain result {@code List}
    * @param <R> the type of result returned by {@code callFunction}
    * @return the processor
    */
-  static <T, R> CallProcessor<List<T>, List<R>> flatMap(Function<T, Future<R>> flatMapFunction) {
+  static <L1 extends Collection<T>, T, R> CallProcessor<L1, List<R>> flatMap(Function<T, Future<R>> flatMapFunction) {
     return callOnResponse(ar -> {
         if (ar.failed()) {
           return failedFuture(ar.cause());
