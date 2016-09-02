@@ -47,7 +47,7 @@ In this chase, if the http server responds, we:
 
 * check for a successful status code
 * convert the body to a [`JsonObject`](http://vertx.io/docs/apidocs/io/vertx/core/json/JsonObject.html) and return this 
-together with the original response object using a [`Tuple.all()`](apidocs/io/dazraf/vertx/futures/tuple/Tuple.html#all-T1-T2-) factory method
+together with the original response object using a [`Tuple.tuple()`](apidocs/io/dazraf/vertx/futures/tuple/Tuple.html#all-T1-T2-) factory method
 * check that the structure of the `JsonObject` is sound
 * if anywhere in the above code we have any untrapped errors, we fail the test.
 
@@ -56,7 +56,7 @@ together with the original response object using a [`Tuple.all()`](apidocs/io/da
 Broadly speaking, we've only had to focus on the "happy" path. 
 The handling and passing of failure conditions is carried out automatically by the library. 
 
-We use [`Tuple.all()`](apidocs/io/dazraf/vertx/futures/tuple/Tuple.html#all-T1-T2-) to create a return object that combines both the `request` and the `body`. 
+We use [`Tuple.tuple()`](apidocs/io/dazraf/vertx/futures/tuple/Tuple.html#tuple-T1-T2-) to create a return object that combines both the `request` and the `body`. 
 This is to demonstrate that multiple results can be passed out from one stage to the next; all typesafe!
 
 Also, the above example shows the use of `FutureProcessors`. `vertx-futures` ships with the following:

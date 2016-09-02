@@ -18,14 +18,14 @@ public interface Futures<T> extends Future<T> {
   }
 
   static <T1, T2> Futures<Tuple2<T1, T2>> when(Future<T1> f1, Future<T2> f2) {
-    return FuturesImpl.when(Tuple.all(f1, f2));
+    return FuturesImpl.when(Tuple.tuple(f1, f2));
   }
 
   static <T1, T2, T3> Futures<Tuple3<T1, T2, T3>> when(Future<T1> f1, Future<T2> f2, Future<T3> f3) {
-    return FuturesImpl.when(Tuple.all(f1, f2, f3));
+    return FuturesImpl.when(Tuple.tuple(f1, f2, f3));
   }
 
   static <T1, T2, T3, T4> Futures<Tuple4<T1, T2, T3, T4>> when(Future<T1> f1, Future<T2> f2, Future<T3> f3, Future<T4> f4) {
-    return FuturesImpl.when(Tuple.all(f1, f2, f3, f4));
+    return FuturesImpl.when(Tuple.tuple(f1, f2, f3, f4));
   }
 }
