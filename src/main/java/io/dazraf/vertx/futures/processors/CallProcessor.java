@@ -1,26 +1,23 @@
 package io.dazraf.vertx.futures.processors;
 
-import io.vertx.core.CompositeFuture;
-import org.slf4j.Logger;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import io.dazraf.vertx.futures.Futures;
 import io.dazraf.vertx.futures.function.Function2;
 import io.dazraf.vertx.futures.function.Function3;
 import io.dazraf.vertx.futures.function.Function4;
 import io.dazraf.vertx.futures.tuple.Tuple2;
 import io.dazraf.vertx.futures.tuple.Tuple3;
 import io.dazraf.vertx.futures.tuple.Tuple4;
-import io.dazraf.vertx.futures.Futures;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
+import org.slf4j.Logger;
+
+import java.util.List;
+import java.util.function.Function;
 
 import static io.vertx.core.Future.*;
-import static java.util.stream.Collectors.toList;
-import static org.slf4j.LoggerFactory.getLogger;
+import static java.util.stream.Collectors.*;
+import static org.slf4j.LoggerFactory.*;
 
 /**
  * Functions for creating {@code call} processor.
@@ -69,22 +66,22 @@ public interface CallProcessor<T, R> extends FutureProcessor<T, R> {
   }
 
   /**
-   * Given a succesfully resolved chain, producing {@code Collection<T>}, receive the result and pass each element to
+   * Given a succesfully resolved chain, producing {@code List<T>}, receive the result and pass each element to
    * the function {@code flatMapFunction} which in turn returns a {@code Future<R>}.
-   * The resulting {@code Collection<Future<R>>} is transformed and returned as {@code Future<Collection<R>>}
-   * @param flatMapFunction the function that receives each element of the chain result {@code Collection<T>}
+   * The resulting {@code List<Future<R>>} is transformed and returned as {@code Future<List<R>>}
+   * @param flatMapFunction the function that receives each element of the chain result {@code List<T>}
    *                        and for each returns {@code Future<R>}
-   * @param <T> the type of the elements in the chain result {@code Collection}
+   * @param <T> the type of the elements in the chain result {@code List}
    * @param <R> the type of result returned by {@code callFunction}
    * @return the processor
    */
-  static <T, R> CallProcessor<Collection<T>, Collection<R>> flatMap(Function<T, Future<R>> flatMapFunction) {
+  static <T, R> CallProcessor<List<T>, List<R>> flatMap(Function<T, Future<R>> flatMapFunction) {
     return callOnResponse(ar -> {
         if (ar.failed()) {
           return failedFuture(ar.cause());
         } else {
           final List<Future> collect = ar.result().stream().map(flatMapFunction).collect(toList());
-          Future<Collection<R>> result = future();
+          Future<List<R>> result = future();
           CompositeFuture.all(collect)
             .setHandler(acf -> {
               if (acf.succeeded()) {
