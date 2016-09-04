@@ -1,6 +1,7 @@
 language: java
 
-sudo: false
+sudo: required
+dist: trusty
 
 cache:
   directories:
@@ -8,7 +9,5 @@ cache:
 
 jdk:
   - oraclejdk8
-
-before_install:
 
 script: mvn clean install
