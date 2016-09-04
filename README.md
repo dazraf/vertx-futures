@@ -1,5 +1,7 @@
 # vertx-futures
 
+[![Build Status](https://travis-ci.org/dazraf/vertx-futures.svg?branch=master)](https://travis-ci.org/dazraf/vertx-futures)
+
 ![graph](assets/graph.png)
 
 __Work In Progress__
