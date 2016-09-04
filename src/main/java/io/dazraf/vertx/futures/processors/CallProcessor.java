@@ -99,7 +99,7 @@ public interface CallProcessor<T, R> extends FutureProcessor<T, R> {
           CompositeFuture.all(collect)
             .setHandler(acf -> {
               if (acf.succeeded()) {
-                result.complete(acf.result().list());
+                result.complete(acf.result().<R>list());
               } else {
                 result.fail(acf.cause());
               }
