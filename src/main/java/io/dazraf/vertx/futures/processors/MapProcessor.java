@@ -2,12 +2,12 @@ package io.dazraf.vertx.futures.processors;
 
 import java.util.function.Function;
 
-import io.dazraf.vertx.futures.function.Function2;
-import io.dazraf.vertx.futures.function.Function3;
-import io.dazraf.vertx.futures.function.Function4;
-import io.dazraf.vertx.futures.tuple.Tuple2;
-import io.dazraf.vertx.futures.tuple.Tuple3;
-import io.dazraf.vertx.futures.tuple.Tuple4;
+import io.dazraf.vertx.function.Function2;
+import io.dazraf.vertx.function.Function3;
+import io.dazraf.vertx.function.Function4;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
 import io.vertx.core.AsyncResult;
 
 import static io.vertx.core.Future.failedFuture;
@@ -17,7 +17,7 @@ import static io.vertx.core.Future.succeededFuture;
  * A {@link FutureProcessor} that maps successful values to a new type {@link R}
  */
 public interface MapProcessor<T, R> extends FutureProcessor<T, R> {
-  static <T, R> MapProcessor<T, R> mapResponse(Function<AsyncResult<T>, R> function) {
+  static <T, R> MapProcessor<T, R> mapOnResponse(Function<AsyncResult<T>, R> function) {
     return future -> {
       try {
         return succeededFuture(function.apply(future));
@@ -33,7 +33,7 @@ public interface MapProcessor<T, R> extends FutureProcessor<T, R> {
 
 
   static <T, R> MapProcessor<T, R> map(Function<T, R> function) {
-    return mapResponse(future -> {
+    return mapOnResponse(future -> {
       if (future.succeeded()) {
         return function.apply(future.result());
       } else {

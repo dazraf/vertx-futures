@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import io.dazraf.vertx.futures.VertxMatcherAssert;
+import io.dazraf.vertx.tuple.Tuple;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -28,7 +29,6 @@ import static io.dazraf.vertx.futures.http.HttpFutures.future;
 import static io.dazraf.vertx.futures.processors.CallProcessor.call;
 import static io.dazraf.vertx.futures.processors.RunProcessor.ifFailedRun;
 import static io.dazraf.vertx.futures.processors.RunProcessor.run;
-import static io.dazraf.vertx.futures.tuple.Tuple.all;
 import static io.vertx.core.Future.succeededFuture;
 import static org.hamcrest.CoreMatchers.is;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -75,7 +75,7 @@ public class HttpTests {
 
     when(future(httpClient.get("/")).end())
         .then(run(HttpFutures::checkHttpSuccess))
-        .then(call(response -> all(succeededFuture(response), bodyObject(response))))
+        .then(call(response -> Tuple.tuple(succeededFuture(response), bodyObject(response))))
         .then(run((response, body) -> VertxMatcherAssert.assertThat(context, body.containsKey("time"), is(true))))
         .then(run((response, body) -> LOG
             .info("Response {} body checks out: {}", response.statusCode(), body.encode())))

@@ -1,4 +1,4 @@
-package io.dazraf.vertx.futures.consumer;
+package io.dazraf.vertx.consumer;
 
 @FunctionalInterface
 public interface Consumer2<T1, T2> extends ConsumerN {

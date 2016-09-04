@@ -1,7 +1,5 @@
 package io.dazraf.vertx.futures.processors;
 
-import io.dazraf.vertx.futures.Futures;
-import io.vertx.core.Future;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
@@ -13,7 +11,7 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 
 import static io.dazraf.vertx.futures.Futures.when;
-import static io.dazraf.vertx.futures.TestUtils.*;
+import static io.dazraf.vertx.TestUtils.*;
 import static io.dazraf.vertx.futures.VertxMatcherAssert.*;
 import static io.dazraf.vertx.futures.processors.CallProcessor.*;
 import static io.dazraf.vertx.futures.processors.RunProcessor.*;

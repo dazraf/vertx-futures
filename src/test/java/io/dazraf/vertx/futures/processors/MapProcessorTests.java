@@ -12,7 +12,7 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 import static io.dazraf.vertx.futures.Futures.when;
 import static io.dazraf.vertx.futures.processors.MapProcessor.map;
-import static io.dazraf.vertx.futures.processors.MapProcessor.mapResponse;
+import static io.dazraf.vertx.futures.processors.MapProcessor.mapOnResponse;
 import static io.dazraf.vertx.futures.processors.RunProcessor.*;
 import static io.vertx.core.Future.*;
 
@@ -76,7 +76,7 @@ public class MapProcessorTests {
   public void mapResponseTest(TestContext context) {
     Async async = context.async();
     when(futureMessage(), futureMessage())
-        .then(mapResponse(asyncResult -> {
+        .then(mapOnResponse(asyncResult -> {
           context.assertEquals(true, asyncResult.succeeded())
               .assertEquals(MSG, asyncResult.result().getT1())
               .assertEquals(MSG, asyncResult.result().getT2());

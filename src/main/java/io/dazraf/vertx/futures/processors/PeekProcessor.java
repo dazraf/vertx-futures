@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 
 import java.util.function.Consumer;
 
-import io.dazraf.vertx.futures.consumer.Consumer2;
-import io.dazraf.vertx.futures.consumer.Consumer3;
-import io.dazraf.vertx.futures.consumer.Consumer4;
-import io.dazraf.vertx.futures.tuple.Tuple2;
-import io.dazraf.vertx.futures.tuple.Tuple3;
-import io.dazraf.vertx.futures.tuple.Tuple4;
+import io.dazraf.vertx.consumer.Consumer2;
+import io.dazraf.vertx.consumer.Consumer3;
+import io.dazraf.vertx.consumer.Consumer4;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
@@ -30,7 +30,7 @@ public interface PeekProcessor<T> extends FutureProcessor<T, T> {
    * @param <T>
    * @return
    */
-  static <T> PeekProcessor<T> peekResponse(Handler<AsyncResult<T>> consumer) {
+  static <T> PeekProcessor<T> peekOnResponse(Handler<AsyncResult<T>> consumer) {
     return future -> {
       try {
         consumer.handle(future);
@@ -43,7 +43,7 @@ public interface PeekProcessor<T> extends FutureProcessor<T, T> {
 
 
   static <T> PeekProcessor<T> peekFailure(Consumer<Throwable> consumer) {
-    return peekResponse(failure(consumer));
+    return peekOnResponse(failure(consumer));
   }
 
   /**
@@ -53,7 +53,7 @@ public interface PeekProcessor<T> extends FutureProcessor<T, T> {
    * @return
    */
   static <T> PeekProcessor<T> peek(Consumer<T> consumer) {
-    return peekResponse(success(consumer));
+    return peekOnResponse(success(consumer));
   }
 
   /**
@@ -64,7 +64,7 @@ public interface PeekProcessor<T> extends FutureProcessor<T, T> {
    * @return
    */
   static <T1, T2> PeekProcessor<Tuple2<T1, T2>> peek(Consumer2<T1, T2> consumer) {
-    return peekResponse(success(consumer));
+    return peekOnResponse(success(consumer));
   }
 
   /**
@@ -76,7 +76,7 @@ public interface PeekProcessor<T> extends FutureProcessor<T, T> {
    * @return
    */
   static <T1, T2, T3> PeekProcessor<Tuple3<T1, T2, T3>> peek(Consumer3<T1, T2, T3> consumer) {
-    return peekResponse(success(consumer));
+    return peekOnResponse(success(consumer));
   }
 
   /**
@@ -89,6 +89,6 @@ public interface PeekProcessor<T> extends FutureProcessor<T, T> {
    * @return
    */
   static <T1, T2, T3, T4> PeekProcessor<Tuple4<T1, T2, T3, T4>> peek(Consumer4<T1, T2, T3, T4> consumer) {
-    return peekResponse(success(consumer));
+    return peekOnResponse(success(consumer));
   }
 }

@@ -2,12 +2,12 @@ package io.dazraf.vertx.futures.filters;
 
 import java.util.function.Consumer;
 
-import io.dazraf.vertx.futures.consumer.Consumer2;
-import io.dazraf.vertx.futures.consumer.Consumer3;
-import io.dazraf.vertx.futures.consumer.Consumer4;
-import io.dazraf.vertx.futures.tuple.Tuple2;
-import io.dazraf.vertx.futures.tuple.Tuple3;
-import io.dazraf.vertx.futures.tuple.Tuple4;
+import io.dazraf.vertx.consumer.Consumer2;
+import io.dazraf.vertx.consumer.Consumer3;
+import io.dazraf.vertx.consumer.Consumer4;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
