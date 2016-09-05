@@ -10,4 +10,4 @@ cache:
 jdk:
   - oraclejdk8
 
-script: mvn clean install
+script: mvn clean install jacoco:report coveralls:report
