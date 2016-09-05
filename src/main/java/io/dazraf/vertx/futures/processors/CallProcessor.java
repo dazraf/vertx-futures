@@ -1,5 +1,6 @@
 package io.dazraf.vertx.futures.processors;
 
+import io.dazraf.vertx.function.Function5;
 import io.dazraf.vertx.futures.Futures;
 import io.dazraf.vertx.function.Function2;
 import io.dazraf.vertx.function.Function3;
@@ -7,6 +8,7 @@ import io.dazraf.vertx.function.Function4;
 import io.dazraf.vertx.tuple.Tuple2;
 import io.dazraf.vertx.tuple.Tuple3;
 import io.dazraf.vertx.tuple.Tuple4;
+import io.dazraf.vertx.tuple.Tuple5;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -152,6 +154,24 @@ public interface CallProcessor<T, R> extends FutureProcessor<T, R> {
    * @return the processor
    */
   static <T1, T2, T3, T4, R> CallProcessor<Tuple4<T1, T2, T3, T4>, R> call(Function4<T1, T2, T3, T4, Future<R>> callFunction) {
+    return call(tuple -> tuple.apply(callFunction));
+  }
+
+
+  /**
+   * A {@code call} operator on a chain emitting a {@link Tuple5}, destructuring the tuple before calling
+   * {@code callFunction}. As other {@code call} operators, this function returns a {@code Future<R>} which
+   * forms the next step in the {@link Futures} chain.
+   * @param callFunction the function to be called with the destructured result of the chain
+   * @param <T1> the type of the first element of the tuple, emitted by the chain preceding this processor
+   * @param <T2> the type of the second element of the tuple, emitted by the chain preceding this processor
+   * @param <T3> the type of the third element of the tuple, emitted by the chain preceding this processor
+   * @param <T4> the type of the fourth element of the tuple, emitted by the chain preceding this processor
+   * @param <T5> the type of the fifth element of the tuple, emitted by the chain preceding this processor
+   * @param <R> the type of result returned by {@code callFunction} and that of the chain after this processor
+   * @return the processor
+   */
+  static <T1, T2, T3, T4, T5, R> CallProcessor<Tuple5<T1, T2, T3, T4, T5>, R> call(Function5<T1, T2, T3, T4, T5, Future<R>> callFunction) {
     return call(tuple -> tuple.apply(callFunction));
   }
 }
