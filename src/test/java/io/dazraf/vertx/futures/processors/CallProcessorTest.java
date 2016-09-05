@@ -19,7 +19,7 @@ import static io.vertx.core.Future.*;
 import static org.hamcrest.CoreMatchers.*;
 
 @RunWith(VertxUnitRunner.class)
-public class CallProcessorTests {
+public class CallProcessorTest {
   private static final String MSG = "message";
   private static final String FAILED = "failed";
   @ClassRule

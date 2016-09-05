@@ -17,7 +17,7 @@ import static io.dazraf.vertx.futures.processors.RunProcessor.*;
 import static io.vertx.core.Future.*;
 
 @RunWith(VertxUnitRunner.class)
-public class MapProcessorTests {
+public class MapProcessorTest {
 
   @ClassRule
   public static final RunTestOnContext vertxContext = new RunTestOnContext();

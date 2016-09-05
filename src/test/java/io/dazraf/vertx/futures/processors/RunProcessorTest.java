@@ -20,7 +20,7 @@ import static io.vertx.core.Future.future;
 import static io.vertx.core.Future.succeededFuture;
 
 @RunWith(VertxUnitRunner.class)
-public class RunProcessorTests {
+public class RunProcessorTest {
   @ClassRule
   public static final RunTestOnContext vertxContext = new RunTestOnContext();
   private static final int NUMBER = 1;
