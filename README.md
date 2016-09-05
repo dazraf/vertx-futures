@@ -1,6 +1,7 @@
 # vertx-futures
 
 [![Build Status](https://travis-ci.org/dazraf/vertx-futures.svg?branch=master)](https://travis-ci.org/dazraf/vertx-futures)
+[![Coverage Status](https://coveralls.io/repos/github/dazraf/vertx-futures/badge.svg?branch=master)](https://coveralls.io/github/dazraf/vertx-futures?branch=master)
 
 ![graph](assets/graph.png)
 
