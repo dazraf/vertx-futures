@@ -101,6 +101,30 @@ public class RunProcessorTest {
   }
 
   @Test
+  public void test4Then2Then1SuccessfulFlow(TestContext context) {
+    Async async = context.async();
+    when(futureMessage(), futureNumber(), futureMessage(), futureMessage())
+      .then(call((msg1, number, msg2, msg3) -> when(
+        succeededFuture(msg1 + msg2 + msg3),
+        succeededFuture(number))))
+      .then(call((msg, number) -> succeededFuture(msg + number)))
+      .then(run(val -> context.assertEquals(MSG + MSG + MSG + NUMBER, val)))
+      .then(run(async::complete))
+      .then(ifFailedRun(context::fail));
+  }
+
+  @Test
+  public void test5Then2Then1SuccessfulFlow(TestContext context) {
+    Async async = context.async();
+    when(futureMessage(), futureNumber(), futureMessage(), futureNumber(), futureMessage())
+      .then(call((msg1, number, msg2, number2, msg3) -> when(succeededFuture(msg1 + msg2 + msg3), succeededFuture(number))))
+      .then(call((msg, number) -> succeededFuture(msg + number)))
+      .then(run(val -> context.assertEquals(MSG + MSG + MSG + NUMBER, val)))
+      .then(run(async::complete))
+      .then(ifFailedRun(context::fail));
+  }
+
+  @Test
   public void thatExceptionInRunFailsChain(TestContext context) {
     Async async = context.async();
     when(futureMessage())
