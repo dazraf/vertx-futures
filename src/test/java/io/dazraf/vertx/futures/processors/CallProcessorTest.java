@@ -135,4 +135,14 @@ public class CallProcessorTest {
       .then(run(() -> context.fail()))
       .then(ifFailedRun(err -> async.complete()));
   }
+
+  @Test
+  public void test_canCallSupplier(TestContext context) {
+    Async async = context.async();
+    when(succeededFuture(RESULT_MSG))
+      .then(call(() -> succeededFuture(RESULT_INT)))
+      .then(run(value -> assertThat(context, value, is(RESULT_INT))))
+      .then(run(async::complete))
+      .then(ifFailedRun(context::fail));
+  }
 }
