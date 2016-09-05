@@ -87,6 +87,19 @@ public class CallProcessorTest {
   }
 
   @Test
+  public void canDestructure5(TestContext context) {
+    Async async = context.async();
+    when(succeededFuture(RESULT_MSG), succeededFuture(RESULT_INT),
+      succeededFuture(RESULT_BOOL), succeededFuture(RESULT_MSG), succeededFuture(RESULT_BOOL))
+      .then(call((s, i, b, s2, b2) -> succeededFuture(s + i + b + s2 + b2)))
+      .then(run(str -> {
+        assertThat(context, str, is(RESULT_MSG + RESULT_INT + RESULT_BOOL + RESULT_MSG + RESULT_BOOL));
+        async.complete();
+      }))
+      .then(ifFailedRun(context::fail));
+  }
+
+  @Test
   public void flatMapFromSuccessfulChain(TestContext context) {
     Async async = context.async();
 
