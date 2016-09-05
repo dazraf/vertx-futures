@@ -11,7 +11,7 @@ import static io.dazraf.vertx.tuple.Tuple.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-public class Tuple4Tests {
+public class Tuple4Test {
   @Test
   public void createAndRetrieveTest() {
     final Tuple4<String, Integer, Boolean, Integer> t = tuple(RESULT_MSG, RESULT_INT, RESULT_BOOL, RESULT_INT);

@@ -10,7 +10,7 @@ import static io.dazraf.vertx.TestUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-public class Tuple2Tests {
+public class Tuple2Test {
   @Test
   public void createAndRetrieveTest() {
     final Tuple2<String, Integer> t = Tuple.tuple(RESULT_MSG, RESULT_INT);

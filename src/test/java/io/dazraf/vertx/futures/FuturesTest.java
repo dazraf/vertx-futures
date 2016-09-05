@@ -17,9 +17,9 @@ import static io.vertx.core.Future.succeededFuture;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @RunWith(VertxUnitRunner.class)
-public class FuturesTests {
+public class FuturesTest {
 
-  private static final Logger LOG = getLogger(FuturesTests.class);
+  private static final Logger LOG = getLogger(FuturesTest.class);
 
   public static final int ID = 1;
   @ClassRule

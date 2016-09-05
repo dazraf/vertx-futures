@@ -35,8 +35,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Ignore // Acceptance testing
 @RunWith(VertxUnitRunner.class)
-public class StarwarsTests {
-  private static final Logger LOG = getLogger(StarwarsTests.class);
+public class StarwarsTest {
+  private static final Logger LOG = getLogger(StarwarsTest.class);
   private Vertx vertx;
   private HttpClient httpClient;
 

@@ -34,9 +34,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @RunWith(VertxUnitRunner.class)
-public class HttpTests {
+public class HttpTest {
 
-  private static final Logger LOG = getLogger(HttpTests.class);
+  private static final Logger LOG = getLogger(HttpTest.class);
 
   private Vertx vertx;
   private HttpServer httpServer;

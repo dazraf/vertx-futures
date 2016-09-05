@@ -12,7 +12,7 @@ import static io.dazraf.vertx.TestUtils.RESULT_MSG;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-public class Tuple3Tests {
+public class Tuple3Test {
   @Test
   public void createAndRetrieveTest() {
     final Tuple3<String, Integer, Boolean> t = Tuple.tuple(RESULT_MSG, RESULT_INT, RESULT_BOOL);
