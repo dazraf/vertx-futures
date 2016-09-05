@@ -5,9 +5,11 @@ import java.util.function.Consumer;
 import io.dazraf.vertx.consumer.Consumer2;
 import io.dazraf.vertx.consumer.Consumer3;
 import io.dazraf.vertx.consumer.Consumer4;
+import io.dazraf.vertx.consumer.Consumer5;
 import io.dazraf.vertx.tuple.Tuple2;
 import io.dazraf.vertx.tuple.Tuple3;
 import io.dazraf.vertx.tuple.Tuple4;
+import io.dazraf.vertx.tuple.Tuple5;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
@@ -40,5 +42,8 @@ public interface SuccessFilter<T> extends Handler<AsyncResult<T>> {
     return success(tuple -> tuple.accept(consumer));
   }
 
+  static <T1, T2, T3, T4, T5> Handler<AsyncResult<Tuple5<T1, T2, T3, T4, T5>>> success(Consumer5<T1, T2, T3, T4, T5> consumer) {
+    return success(tuple -> tuple.accept(consumer));
+  }
 
 }

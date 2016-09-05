@@ -1,5 +1,7 @@
 package io.dazraf.vertx.futures.processors;
 
+import io.dazraf.vertx.consumer.Consumer5;
+import io.dazraf.vertx.tuple.Tuple5;
 import org.slf4j.Logger;
 
 import java.util.function.Consumer;
@@ -80,7 +82,7 @@ public interface PeekProcessor<T> extends FutureProcessor<T, T> {
   }
 
   /**
-   * Peek at a successful chain emitting a Tuple2
+   * Peek at a successful chain emitting a Tuple4
    * @param consumer
    * @param <T1>
    * @param <T2>
@@ -89,6 +91,21 @@ public interface PeekProcessor<T> extends FutureProcessor<T, T> {
    * @return
    */
   static <T1, T2, T3, T4> PeekProcessor<Tuple4<T1, T2, T3, T4>> peek(Consumer4<T1, T2, T3, T4> consumer) {
+    return peekOnResponse(success(consumer));
+  }
+
+
+  /**
+   * Peek at a successful chain emitting a Tuple5
+   * @param consumer
+   * @param <T1>
+   * @param <T2>
+   * @param <T3>
+   * @param <T4>
+   * @param <T5>
+   * @return
+   */
+  static <T1, T2, T3, T4, T5> PeekProcessor<Tuple5<T1, T2, T3, T4, T5>> peek(Consumer5<T1, T2, T3, T4, T5> consumer) {
     return peekOnResponse(success(consumer));
   }
 }
