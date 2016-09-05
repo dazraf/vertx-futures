@@ -26,6 +26,7 @@
     <vertx.version>3.3.2</vertx.version>
     <gpg.keyname>BF1D321C</gpg.keyname> <!-- GPG Key ID to use for signing -->
     <release.username>dazraf</release.username> <!-- username for our git repository -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
