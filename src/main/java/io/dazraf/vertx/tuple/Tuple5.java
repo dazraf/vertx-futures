@@ -89,10 +89,10 @@ public class Tuple5<T1, T2, T3, T4, T5> extends Tuple<Tuple5<T1, T2, T3, T4, T5>
   /**
    * Retrieve the fourth value
    *
-   * @return the value for the fourth type
+   * @return the value for the fifth type
    */
-  public T4 getT5() {
-    return t4;
+  public T5 getT5() {
+    return t5;
   }
 
   /**

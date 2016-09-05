@@ -1,5 +1,7 @@
 package io.dazraf.vertx.futures.processors;
 
+import io.dazraf.vertx.consumer.Consumer5;
+import io.dazraf.vertx.tuple.Tuple5;
 import org.slf4j.Logger;
 
 import java.util.function.Consumer;
@@ -68,6 +70,10 @@ public interface RunProcessor<T> extends FutureProcessor<T, T> {
   }
 
   static <T1, T2, T3, T4> RunProcessor<Tuple4<T1, T2, T3, T4>> run(Consumer4<T1, T2, T3, T4> consumer) {
+    return runOnResponse(success(consumer));
+  }
+
+  static <T1, T2, T3, T4, T5> RunProcessor<Tuple5<T1, T2, T3, T4, T5>> run(Consumer5<T1, T2, T3, T4, T5> consumer) {
     return runOnResponse(success(consumer));
   }
 

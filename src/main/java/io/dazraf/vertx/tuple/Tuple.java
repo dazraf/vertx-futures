@@ -68,7 +68,7 @@ public abstract class Tuple<T extends Tuple> {
    * @param <T2> The type of the second value
    * @param <T3> The type of the third value
    * @param <T4> The type of the fourth value
-   * @param <T4> The type of the fifth value
+   * @param <T5> The type of the fifth value
    * @return The constructed {@link Tuple5}
    */
   public static <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> tuple(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5) {
