@@ -1,5 +1,7 @@
 package io.dazraf.vertx.futures;
 
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,8 @@ import static io.dazraf.vertx.futures.processors.CallProcessor.call;
 import static io.dazraf.vertx.futures.processors.RunProcessor.ifFailedRun;
 import static io.dazraf.vertx.futures.processors.RunProcessor.run;
 import static io.vertx.core.Future.succeededFuture;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @RunWith(VertxUnitRunner.class)
@@ -21,17 +25,41 @@ public class FuturesTest {
 
   private static final Logger LOG = getLogger(FuturesTest.class);
 
-  public static final int ID = 1;
+  private static final int ID = 1;
+  private  static final String FAILURE_MSG = "Failure!";
   @ClassRule
   public static RunTestOnContext context = new RunTestOnContext();
 
   @Test
-  public void generalTest() {
+  public void test_1then2then1_happypath_succeeds() {
     when(getId())
         .then(call(id -> when(getName(id), getAge(id))))
         .then(call((name, age) -> composeMessage(name, age)))
         .then(run(result -> LOG.info(result)))
         .then(ifFailedRun(cause -> LOG.error("error handler", cause)));
+  }
+
+  @Test
+  public void test_unresolvedFutureImpl_canBeFailedWithString() {
+    Futures<Integer> future = new FuturesImpl<>(null);
+    future.fail(FAILURE_MSG);
+    assertTrue(future.failed());
+    assertThat(future.cause().getMessage(), is(FAILURE_MSG));
+  }
+
+  @Test
+  public void test_canComplete() {
+    Futures<Integer> future = new FuturesImpl<>(null);
+    assertFalse(future.isComplete());
+    future.complete();
+    assertTrue(future.isComplete() && future.result() == null);
+  }
+
+  @Test
+  public void test_whenOfFutures_returnsSame() {
+    Future<String> f1 = Futures.when(succeededFuture("hello"));
+    Future<String> f2 = Futures.when(f1);
+    assertSame(f1, f2);
   }
 
   private Future<Integer> getId() {
