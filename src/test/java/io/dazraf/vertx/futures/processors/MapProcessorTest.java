@@ -73,6 +73,22 @@ public class MapProcessorTest {
   }
 
   @Test
+  public void map5ValuesTest(TestContext context) {
+    Async async = context.async();
+    when(futureMessage(), futureMessage(), futureMessage(), futureMessage(), futureMessage())
+      .then(run((val1, val2, val3, val4, val5) ->
+        context
+          .assertEquals(MSG, val1).assertEquals(MSG, val2)
+          .assertEquals(MSG, val3)
+          .assertEquals(MSG, val4)
+          .assertEquals(MSG, val5)))
+      .then(map((val1, val2, val3, val4, val5) -> val1 + val2 + val3 + val4 + val5))
+      .then(run(val -> context.assertEquals(MSG + MSG + MSG + MSG + MSG, val)))
+      .then(run(async::complete))
+      .then(ifFailedRun(context::fail));
+  }
+
+  @Test
   public void mapResponseTest(TestContext context) {
     Async async = context.async();
     when(futureMessage(), futureMessage())
