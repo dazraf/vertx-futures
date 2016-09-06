@@ -1,6 +1,7 @@
 package io.dazraf.vertx.futures.http;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,6 +84,17 @@ public class HttpTest {
         .then(ifFailedRun(context::fail));
   }
 
+  @Test
+  public void test_methods_unsupported() {
+    final HttpClientRequestWithFutureResponse future = future(httpClient.get("/"));
+    assertThrows(() -> future.complete(null), UnsupportedOperationException.class);
+    assertThrows(future::complete, UnsupportedOperationException.class);
+    assertThrows(() -> future.fail("error"), UnsupportedOperationException.class);
+    assertThrows(() -> future.fail(new Exception("error")), UnsupportedOperationException.class);
+    assertThrows(() -> future.exceptionHandler(err -> {}), UnsupportedOperationException.class);
+    assertThrows(() -> future.handler(response -> {}), UnsupportedOperationException.class);
+  }
+
   private void getData(RoutingContext rc) {
     JsonObject data = new JsonObject();
     data.put("time", LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE));
@@ -91,5 +103,20 @@ public class HttpTest {
         .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
         .end(data.encode());
 
+  }
+
+  private void assertThrows(Runnable runnable, Class<? extends Throwable> throwableClass) {
+    try {
+      runnable.run();
+      throwFailedToThrow(throwableClass);
+    } catch (Throwable cause) {
+      if (!throwableClass.isAssignableFrom(cause.getClass())) {
+        throwFailedToThrow(throwableClass);
+      }
+    }
+  }
+
+  private void throwFailedToThrow(Class<? extends Throwable> throwableClass) {
+    throw new RuntimeException("Failed to throw " + throwableClass.getName());
   }
 }

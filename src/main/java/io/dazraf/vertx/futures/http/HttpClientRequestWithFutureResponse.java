@@ -10,7 +10,6 @@ import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpConnection;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpVersion;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  *
@@ -68,22 +67,22 @@ public class HttpClientRequestWithFutureResponse implements Future<HttpClientRes
 
   @Override
   public void complete(HttpClientResponse result) {
-    throw new NotImplementedException(); // because only the http callback can complete this
+    throw new UnsupportedOperationException(); // because only the http callback can complete this
   }
 
   @Override
   public void complete() {
-    throw new NotImplementedException(); // because only the http callback can complete this
+    throw new UnsupportedOperationException(); // because only the http callback can complete this
   }
 
   @Override
   public void fail(Throwable throwable) {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void fail(String failureMessage) {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -107,7 +106,7 @@ public class HttpClientRequestWithFutureResponse implements Future<HttpClientRes
   }
 
   public HttpClientRequestWithFutureResponse exceptionHandler(Handler<Throwable> handler) {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   public HttpClientRequestWithFutureResponse write(Buffer data) {request.write(data);
@@ -129,7 +128,7 @@ public class HttpClientRequestWithFutureResponse implements Future<HttpClientRes
   }
 
   public HttpClientRequestWithFutureResponse handler(Handler<HttpClientResponse> handler) {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   public HttpClientRequestWithFutureResponse pause() {
