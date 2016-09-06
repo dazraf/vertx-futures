@@ -12,14 +12,6 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpVersion;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-
-// * <p><ol>
-//   * <li>wrap an existing {@link HttpClientRequest}</li>
-//  * <li>present all methods specified by {@link HttpClientRequest}</li>
-//  * <li>implement {@link Future<HttpClientResponse>} </li>
-//
-
-
 /**
  *
  * Instances of this class:
