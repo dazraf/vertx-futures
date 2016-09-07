@@ -1,7 +1,5 @@
 package io.dazraf.vertx.futures;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +11,7 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 import static io.dazraf.vertx.futures.Futures.when;
 import static io.dazraf.vertx.futures.processors.CallProcessor.call;
-import static io.dazraf.vertx.futures.processors.RunProcessor.ifFailedRun;
+import static io.dazraf.vertx.futures.processors.RunProcessor.runOnFail;
 import static io.dazraf.vertx.futures.processors.RunProcessor.run;
 import static io.vertx.core.Future.succeededFuture;
 import static org.hamcrest.CoreMatchers.is;
@@ -36,7 +34,7 @@ public class FuturesTest {
         .then(call(id -> when(getName(id), getAge(id))))
         .then(call((name, age) -> composeMessage(name, age)))
         .then(run(result -> LOG.info(result)))
-        .then(ifFailedRun(cause -> LOG.error("error handler", cause)));
+        .then(runOnFail(cause -> LOG.error("error handler", cause)));
   }
 
   @Test

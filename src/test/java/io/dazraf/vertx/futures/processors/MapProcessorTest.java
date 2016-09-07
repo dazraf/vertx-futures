@@ -31,7 +31,7 @@ public class MapProcessorTest {
         .then(map(val -> val + val))
         .then(run(val -> context.assertEquals(MSG + MSG, val)))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 
   @Test
@@ -42,7 +42,7 @@ public class MapProcessorTest {
         .then(map((val1, val2) -> val1 + val2))
         .then(run(val -> context.assertEquals(MSG + MSG, val)))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 
   @Test
@@ -54,7 +54,7 @@ public class MapProcessorTest {
         .then(map((val1, val2, val3) -> val1 + val2 + val3))
         .then(run(val -> context.assertEquals(MSG + MSG + MSG, val)))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 
   @Test
@@ -69,7 +69,7 @@ public class MapProcessorTest {
         .then(map((val1, val2, val3, val4) -> val1 + val2 + val3 + val4))
         .then(run(val -> context.assertEquals(MSG + MSG + MSG + MSG, val)))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 
   @Test
@@ -85,7 +85,7 @@ public class MapProcessorTest {
       .then(map((val1, val2, val3, val4, val5) -> val1 + val2 + val3 + val4 + val5))
       .then(run(val -> context.assertEquals(MSG + MSG + MSG + MSG + MSG, val)))
       .then(run(async::complete))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -100,7 +100,7 @@ public class MapProcessorTest {
         }))
         .then(run(result -> context.assertEquals(MSG + MSG, result)))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 
   @Test
@@ -112,7 +112,7 @@ public class MapProcessorTest {
         throw new RuntimeException("failed");
       }))
       .then(run((Runnable) context::fail))
-      .then(ifFailedRun(err -> async.complete()));
+      .then(runOnFail(err -> async.complete()));
   }
 
   @Test
@@ -124,7 +124,7 @@ public class MapProcessorTest {
         throw new RuntimeException("Error");
       }))
       .then(run(s -> context.fail("failed")))
-      .then(ifFailedRun(err -> async.complete()));
+      .then(runOnFail(err -> async.complete()));
   }
 
   private Future<String> futureMessage() {

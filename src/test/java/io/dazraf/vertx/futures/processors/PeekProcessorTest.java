@@ -31,7 +31,7 @@ public class PeekProcessorTest {
         throw new RuntimeException("failed");
       }))
       .then(run(async::complete))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
 
@@ -41,7 +41,7 @@ public class PeekProcessorTest {
     when(failedFuture(FAILED_MSG))
       .then(peekFailure(err -> async.countDown()))
       .then(run((Runnable) context::fail))
-      .then(ifFailedRun(err -> async.countDown()));
+      .then(runOnFail(err -> async.countDown()));
   }
 
   @Test
@@ -54,7 +54,7 @@ public class PeekProcessorTest {
         async.countDown();
       }))
       .then(run(async::countDown))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -68,7 +68,7 @@ public class PeekProcessorTest {
         async.countDown();
       }))
       .then(run(async::countDown))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -84,7 +84,7 @@ public class PeekProcessorTest {
         async.countDown();
       }))
       .then(run(async::countDown))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -101,6 +101,6 @@ public class PeekProcessorTest {
         async.countDown();
       }))
       .then(run(async::countDown))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 }

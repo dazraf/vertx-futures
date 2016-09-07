@@ -13,7 +13,7 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import static io.dazraf.vertx.futures.Futures.when;
 import static io.dazraf.vertx.futures.processors.CallProcessor.call;
 import static io.dazraf.vertx.futures.processors.MapProcessor.map;
-import static io.dazraf.vertx.futures.processors.RunProcessor.ifFailedRun;
+import static io.dazraf.vertx.futures.processors.RunProcessor.runOnFail;
 import static io.dazraf.vertx.futures.processors.RunProcessor.run;
 import static io.vertx.core.Future.failedFuture;
 import static io.vertx.core.Future.future;
@@ -34,7 +34,7 @@ public class RunProcessorTest {
           context.assertEquals(MSG, result);
           async.complete();
         }))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 
   @Test
@@ -44,7 +44,7 @@ public class RunProcessorTest {
     when(future)
         .then(run(msg -> context.assertEquals(MSG, msg)))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
     vertxContext.vertx().setTimer(10, id -> future.complete(MSG));
   }
 
@@ -53,8 +53,8 @@ public class RunProcessorTest {
     Async async = context.async();
     when(failedFuture(MSG))
         .then(run(() -> context.fail("should have failed")))
-        .then(ifFailedRun(err -> context.assertEquals(MSG, err.getMessage())))
-        .then(ifFailedRun(err -> async.complete()));
+        .then(runOnFail(err -> context.assertEquals(MSG, err.getMessage())))
+        .then(runOnFail(err -> async.complete()));
   }
 
   @Test
@@ -64,8 +64,8 @@ public class RunProcessorTest {
     Future<String> future = future();
     when(future)
         .then(run(() -> context.fail("should have failed")))
-        .then(ifFailedRun((err -> context.assertEquals(MSG, err.getMessage()))))
-        .then(ifFailedRun(err -> async.complete()));
+        .then(runOnFail((err -> context.assertEquals(MSG, err.getMessage()))))
+        .then(runOnFail(err -> async.complete()));
     vertxContext.vertx().setTimer(10, id -> future.fail(MSG));
   }
 
@@ -76,7 +76,7 @@ public class RunProcessorTest {
         .then(map((msg, number) -> msg + number))
         .then(run(val -> context.assertEquals(MSG + NUMBER, val)))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 
   @Test
@@ -86,7 +86,7 @@ public class RunProcessorTest {
         .then(call((msg, number) -> succeededFuture(msg + number)))
         .then(run(val -> context.assertEquals(MSG + NUMBER, val)))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 
   @Test
@@ -97,7 +97,7 @@ public class RunProcessorTest {
         .then(call((msg, number) -> succeededFuture(msg + number)))
         .then(run(val -> context.assertEquals(MSG + MSG + NUMBER, val)))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 
   @Test
@@ -110,7 +110,7 @@ public class RunProcessorTest {
       .then(call((msg, number) -> succeededFuture(msg + number)))
       .then(run(val -> context.assertEquals(MSG + MSG + MSG + NUMBER, val)))
       .then(run(async::complete))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -121,7 +121,7 @@ public class RunProcessorTest {
       .then(call((msg, number) -> succeededFuture(msg + number)))
       .then(run(val -> context.assertEquals(MSG + MSG + MSG + NUMBER, val)))
       .then(run(async::complete))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -129,7 +129,7 @@ public class RunProcessorTest {
     Async async = context.async();
     when(futureMessage())
         .then(run(() -> { throw new RuntimeException("error"); } ))
-        .then(ifFailedRun(err -> async.complete()))
+        .then(runOnFail(err -> async.complete()))
         .then(run(() -> context.fail("failed")));
   }
 

@@ -62,7 +62,7 @@ public class StarwarsTest {
         .collect(Collectors.toList())))
       .then(peek(list -> list.forEach(LOG::info)))
       .then(run(async::complete))
-      .then(ifFailedRun(testContext::fail));
+      .then(runOnFail(testContext::fail));
   }
 
   @Test
@@ -73,7 +73,7 @@ public class StarwarsTest {
       .then(call(residents -> getUniqueStarshipsUsedByResidents(residents, getAllStarships())))
       .then(peek(starships -> starships.forEach(o -> LOG.info(o.toString()))))
       .then(run(async::complete))
-      .then(ifFailedRun(testContext::fail));
+      .then(runOnFail(testContext::fail));
   }
 
   private Future<List<JsonObject>> getUniqueStarshipsUsedByResidents(List<JsonObject> residents, Future<JsonArray> starShips) {

@@ -77,7 +77,7 @@ public interface RunProcessor<T> extends FutureProcessor<T, T> {
     return runOnResponse(success(consumer));
   }
 
-  static <T> RunProcessor<T> ifFailedRun(Consumer<Throwable> consumer) {
+  static <T> RunProcessor<T> runOnFail(Consumer<Throwable> consumer) {
     return runOnResponse(failure(consumer));
   }
 

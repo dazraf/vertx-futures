@@ -34,7 +34,7 @@ public class CallProcessorTest {
         throw new RuntimeException("failed");
       }))
       .then(run((Runnable) context::fail))
-      .then(ifFailedRun(err -> async.complete()));
+      .then(runOnFail(err -> async.complete()));
   }
 
   @Test
@@ -46,7 +46,7 @@ public class CallProcessorTest {
         throw new RuntimeException("failed");
       }))
       .then(run(() -> context.fail("this should never be executed")))
-      .then(ifFailedRun(err -> async.complete()));
+      .then(runOnFail(err -> async.complete()));
   }
 
   @Test
@@ -58,7 +58,7 @@ public class CallProcessorTest {
         assertThat(context, str, is(RESULT_MSG + RESULT_INT));
         async.complete();
       }))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -70,7 +70,7 @@ public class CallProcessorTest {
         assertThat(context, str, is(RESULT_MSG + RESULT_INT + RESULT_BOOL));
         async.complete();
       }))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -83,7 +83,7 @@ public class CallProcessorTest {
         assertThat(context, str, is(RESULT_MSG + RESULT_INT + RESULT_BOOL + RESULT_MSG));
         async.complete();
       }))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -96,7 +96,7 @@ public class CallProcessorTest {
         assertThat(context, str, is(RESULT_MSG + RESULT_INT + RESULT_BOOL + RESULT_MSG + RESULT_BOOL));
         async.complete();
       }))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -110,7 +110,7 @@ public class CallProcessorTest {
         assertThat(context, sum, is(20));
         async.complete();
       }))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 
   @Test
@@ -120,7 +120,7 @@ public class CallProcessorTest {
     when(succeededFuture(Arrays.asList(1, 2, 3, 4, 5)))
       .then(flatMap(i -> failedFuture(FAILED)))
       .then(run(result -> context.fail("should never get here")))
-      .then(ifFailedRun(err -> {
+      .then(runOnFail(err -> {
         assertThat(context, err.getMessage(), is(FAILED));
         async.complete();
       }));
@@ -133,7 +133,7 @@ public class CallProcessorTest {
       .then(run(() -> { throw new RuntimeException(FAILED); }))
       .then(flatMap(i -> succeededFuture(i + 1)))
       .then(run(() -> context.fail()))
-      .then(ifFailedRun(err -> async.complete()));
+      .then(runOnFail(err -> async.complete()));
   }
 
   @Test
@@ -143,6 +143,6 @@ public class CallProcessorTest {
       .then(call(() -> succeededFuture(RESULT_INT)))
       .then(run(value -> assertThat(context, value, is(RESULT_INT))))
       .then(run(async::complete))
-      .then(ifFailedRun(context::fail));
+      .then(runOnFail(context::fail));
   }
 }

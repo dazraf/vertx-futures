@@ -28,7 +28,7 @@ public class IfProcessorTest {
       .then(ifSucceeded(asyncResult -> succeededFuture(RESULT_BOOL)))
       .then(run(result -> assertThat(context, result, is(RESULT_BOOL))))
       .then(run(async::complete))
-      .then(ifFailedRun(context::fail));
+      .then(RunProcessor.runOnFail(context::fail));
   }
 
   @Test
@@ -38,18 +38,18 @@ public class IfProcessorTest {
       .then(ifFailed(asyncResult -> succeededFuture(RESULT_MSG + RESULT_MSG)))
       .then(run(result -> assertThat(context, result, is(RESULT_MSG))))
       .then(run(async::complete))
-      .then(ifFailedRun(context::fail));
+      .then(RunProcessor.runOnFail(context::fail));
   }
 
 
   @Test
-  public void test_givenFailure_canExecuteHappyPath(TestContext context) {
+  public void test_givenFailure_canExecuteFailureHandler(TestContext context) {
     Async async = context.async();
     when(failedFuture(RESULT_MSG))
       .then(ifFailed(asyncResult -> succeededFuture(RESULT_BOOL)))
       .then(run(result -> assertThat(context, result, is(RESULT_BOOL))))
       .then(run(async::complete))
-      .then(ifFailedRun(context::fail));
+      .then(RunProcessor.runOnFail(context::fail));
   }
 
 
@@ -62,7 +62,7 @@ public class IfProcessorTest {
         assertThat(context, ar.failed(), is(true));
         assertThat(context, ar.cause().getMessage(), is(RESULT_MSG));
       }))
-      .then(ifFailedRun(err -> async.complete()))
+      .then(RunProcessor.runOnFail(err -> async.complete()))
       .then(run((Runnable) context::fail));
   }
 }
