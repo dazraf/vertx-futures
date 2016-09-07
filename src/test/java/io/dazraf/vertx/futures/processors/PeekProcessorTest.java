@@ -39,7 +39,7 @@ public class PeekProcessorTest {
   public void test_failure_canBePeeked(TestContext context) {
     Async async = context.async(2);
     when(failedFuture(FAILED_MSG))
-      .then(peekFailure(err -> async.countDown()))
+      .then(peekOnFail(err -> async.countDown()))
       .then(run((Runnable) context::fail))
       .then(runOnFail(err -> async.countDown()));
   }

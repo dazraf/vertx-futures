@@ -44,7 +44,7 @@ public interface PeekProcessor<T> extends FutureProcessor<T, T> {
   }
 
 
-  static <T> PeekProcessor<T> peekFailure(Consumer<Throwable> consumer) {
+  static <T> PeekProcessor<T> peekOnFail(Consumer<Throwable> consumer) {
     return peekOnResponse(failure(consumer));
   }
 
