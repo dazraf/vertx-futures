@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PeekProcessor.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vertx-futures</a> &gt; <a href="index.source.html" class="el_package">io.dazraf.vertx.futures.processors</a> &gt; <span class="el_source">PeekProcessor.java</span></div><h1>PeekProcessor.java</h1><pre class="source lang-java linenums">package io.dazraf.vertx.futures.processors;
+
+import io.dazraf.vertx.consumer.Consumer5;
+import io.dazraf.vertx.tuple.Tuple5;
+import org.slf4j.Logger;
+
+import java.util.function.Consumer;
+
+import io.dazraf.vertx.consumer.Consumer2;
+import io.dazraf.vertx.consumer.Consumer3;
+import io.dazraf.vertx.consumer.Consumer4;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+
+import static io.dazraf.vertx.futures.filters.FailureFilter.failure;
+import static io.dazraf.vertx.futures.filters.SuccessFilter.success;
+import static org.slf4j.LoggerFactory.getLogger;
+
+/**
+ * A {@link FutureProcessor} to examine the state of the chain.
+ * Any exceptions thrown by the peek consumer function are ignored.
+ */
+public interface PeekProcessor&lt;T&gt; extends FutureProcessor&lt;T, T&gt; {
+<span class="fc" id="L27">  Logger LOG = getLogger(PeekProcessor.class);</span>
+
+  /**
+   * Observe the state of the chain. Any exceptions from the consumer are ignored and do not affect the state of the chain.
+   * @param consumer
+   * @param &lt;T&gt;
+   * @return
+   */
+  static &lt;T&gt; PeekProcessor&lt;T&gt; peekOnResponse(Handler&lt;AsyncResult&lt;T&gt;&gt; consumer) {
+<span class="fc" id="L36">    return future -&gt; {</span>
+      try {
+<span class="fc" id="L38">        consumer.handle(future);</span>
+<span class="fc" id="L39">      } catch (Throwable error) {</span>
+<span class="fc" id="L40">        LOG.trace(&quot;peek function failed&quot;, error);</span>
+<span class="fc" id="L41">      }</span>
+<span class="fc" id="L42">      return future;</span>
+    };
+  }
+
+
+  static &lt;T&gt; PeekProcessor&lt;T&gt; peekOnFail(Consumer&lt;Throwable&gt; consumer) {
+<span class="fc" id="L48">    return peekOnResponse(failure(consumer));</span>
+  }
+
+  /**
+   * Peek at a single-value result from a successful chain
+   * @param consumer
+   * @param &lt;T&gt;
+   * @return
+   */
+  static &lt;T&gt; PeekProcessor&lt;T&gt; peek(Consumer&lt;T&gt; consumer) {
+<span class="fc" id="L58">    return peekOnResponse(success(consumer));</span>
+  }
+
+  /**
+   * Peek at a successful chain emitting a Tuple2
+   * @param consumer
+   * @param &lt;T1&gt;
+   * @param &lt;T2&gt;
+   * @return
+   */
+  static &lt;T1, T2&gt; PeekProcessor&lt;Tuple2&lt;T1, T2&gt;&gt; peek(Consumer2&lt;T1, T2&gt; consumer) {
+<span class="fc" id="L69">    return peekOnResponse(success(consumer));</span>
+  }
+
+  /**
+   * Peek at a successful chain emitting a Tuple3
+   * @param consumer
+   * @param &lt;T1&gt;
+   * @param &lt;T2&gt;
+   * @param &lt;T3&gt;
+   * @return
+   */
+  static &lt;T1, T2, T3&gt; PeekProcessor&lt;Tuple3&lt;T1, T2, T3&gt;&gt; peek(Consumer3&lt;T1, T2, T3&gt; consumer) {
+<span class="fc" id="L81">    return peekOnResponse(success(consumer));</span>
+  }
+
+  /**
+   * Peek at a successful chain emitting a Tuple4
+   * @param consumer
+   * @param &lt;T1&gt;
+   * @param &lt;T2&gt;
+   * @param &lt;T3&gt;
+   * @param &lt;T4&gt;
+   * @return
+   */
+  static &lt;T1, T2, T3, T4&gt; PeekProcessor&lt;Tuple4&lt;T1, T2, T3, T4&gt;&gt; peek(Consumer4&lt;T1, T2, T3, T4&gt; consumer) {
+<span class="fc" id="L94">    return peekOnResponse(success(consumer));</span>
+  }
+
+
+  /**
+   * Peek at a successful chain emitting a Tuple5
+   * @param consumer
+   * @param &lt;T1&gt;
+   * @param &lt;T2&gt;
+   * @param &lt;T3&gt;
+   * @param &lt;T4&gt;
+   * @param &lt;T5&gt;
+   * @return
+   */
+  static &lt;T1, T2, T3, T4, T5&gt; PeekProcessor&lt;Tuple5&lt;T1, T2, T3, T4, T5&gt;&gt; peek(Consumer5&lt;T1, T2, T3, T4, T5&gt; consumer) {
+<span class="fc" id="L109">    return peekOnResponse(success(consumer));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

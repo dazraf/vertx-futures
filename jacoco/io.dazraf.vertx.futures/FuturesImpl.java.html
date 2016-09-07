@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>FuturesImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vertx-futures</a> &gt; <a href="index.source.html" class="el_package">io.dazraf.vertx.futures</a> &gt; <span class="el_source">FuturesImpl.java</span></div><h1>FuturesImpl.java</h1><pre class="source lang-java linenums">package io.dazraf.vertx.futures;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
+
+import io.dazraf.vertx.futures.processors.FutureProcessor;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.impl.NoStackTraceThrowable;
+
+/**
+ * Implementation of Futures
+ */
+class FuturesImpl&lt;T&gt; implements Futures&lt;T&gt; {
+
+  private T result;
+  private Throwable cause;
+  private boolean succeeded;
+  private boolean failed;
+
+  private final Future parent; // required to avoid the parent being GC'd
+
+<span class="fc" id="L25">  private List&lt;Consumer&lt;Future&lt;T&gt;&gt;&gt; dependents = new LinkedList&lt;&gt;();</span>
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  public static final &lt;T&gt; Futures&lt;T&gt; when(Future&lt;T&gt; future) {
+<span class="fc bfc" id="L29" title="All 2 branches covered.">    if (future instanceof Futures) {</span>
+      // if already a Futures perfectly good to reuse and will minimise GC pressure
+<span class="fc" id="L31">      return (Futures&lt;T&gt;) future;</span>
+    } else {
+<span class="fc" id="L33">      return new FuturesImpl&lt;&gt;(future, future);</span>
+    }
+  }
+
+<span class="fc" id="L37">  public FuturesImpl(Future parent) {</span>
+<span class="fc" id="L38">    this.parent = parent;</span>
+<span class="fc" id="L39">  }</span>
+
+  public FuturesImpl(Future&lt;T&gt; future, Future parent) {
+<span class="fc" id="L42">    this(parent);</span>
+<span class="fc" id="L43">    initialise(future);</span>
+<span class="fc" id="L44">  }</span>
+
+  private FuturesImpl&lt;T&gt; initialise(Future&lt;T&gt; future) {
+<span class="fc" id="L47">    future.setHandler(asyncResult -&gt; {</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">      if (asyncResult.failed()) {</span>
+<span class="fc" id="L49">        fail(asyncResult.cause());</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">      } else if (asyncResult.succeeded()) {</span>
+<span class="fc" id="L51">        complete(asyncResult.result());</span>
+      }
+<span class="fc" id="L53">      notifyAllDependents(this);</span>
+<span class="fc" id="L54">    });</span>
+<span class="fc" id="L55">    return this;</span>
+  }
+
+  private void notifyAllDependents(Future&lt;T&gt; future) {
+<span class="fc" id="L59">    dependents.forEach(dependent -&gt; dependent.accept(future));</span>
+<span class="fc" id="L60">  }</span>
+
+  @Override
+  public &lt;R&gt; Futures&lt;R&gt; then(FutureProcessor&lt;T, R&gt; processor) {
+<span class="fc" id="L64">    FuturesImpl&lt;R&gt; result = new FuturesImpl&lt;&gt;(this);</span>
+<span class="fc" id="L65">    addHandler(future -&gt; result.initialise(processor.apply(future)));</span>
+<span class="fc" id="L66">    return result;</span>
+  }
+
+  @Override
+  public boolean isComplete() {
+<span class="fc bfc" id="L71" title="All 4 branches covered.">    return succeeded || failed;</span>
+  }
+
+  @Override
+  public Future&lt;T&gt; setHandler(Handler&lt;AsyncResult&lt;T&gt;&gt; handler) {
+<span class="fc" id="L76">    addHandler(handler::handle);</span>
+<span class="fc" id="L77">    return this;</span>
+  }
+
+  @Override
+  public void complete(T result) {
+<span class="fc" id="L82">    this.result = result;</span>
+<span class="fc" id="L83">    this.succeeded = true;</span>
+<span class="fc" id="L84">    this.failed = false;</span>
+<span class="fc" id="L85">    this.cause = null;</span>
+<span class="fc" id="L86">  }</span>
+
+  @Override
+  public void complete() {
+<span class="fc" id="L90">    complete(null);</span>
+<span class="fc" id="L91">  }</span>
+
+  @Override
+  public void fail(Throwable throwable) {
+<span class="fc" id="L95">    this.result = null;</span>
+<span class="fc" id="L96">    this.succeeded = false;</span>
+<span class="fc" id="L97">    this.failed = true;</span>
+<span class="fc" id="L98">    this.cause = throwable;</span>
+<span class="fc" id="L99">  }</span>
+
+  @Override
+  public void fail(String failureMessage) {
+<span class="fc" id="L103">    fail(new NoStackTraceThrowable(failureMessage));</span>
+<span class="fc" id="L104">  }</span>
+
+  @Override
+  public T result() {
+<span class="fc" id="L108">    return result;</span>
+  }
+
+  @Override
+  public Throwable cause() {
+<span class="fc" id="L113">    return cause;</span>
+  }
+
+  @Override
+  public boolean succeeded() {
+<span class="fc" id="L118">    return succeeded;</span>
+  }
+
+  @Override
+  public boolean failed() {
+<span class="fc" id="L123">    return failed;</span>
+  }
+
+  private void addHandler(Consumer&lt;Future&lt;T&gt;&gt; handler) {
+<span class="fc bfc" id="L127" title="All 2 branches covered.">    if (isComplete()) {</span>
+<span class="fc" id="L128">      handler.accept(this);</span>
+    } else {
+<span class="fc" id="L130">      dependents.add(handler);</span>
+    }
+<span class="fc" id="L132">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

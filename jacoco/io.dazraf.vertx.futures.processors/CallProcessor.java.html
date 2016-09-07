@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CallProcessor.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vertx-futures</a> &gt; <a href="index.source.html" class="el_package">io.dazraf.vertx.futures.processors</a> &gt; <span class="el_source">CallProcessor.java</span></div><h1>CallProcessor.java</h1><pre class="source lang-java linenums">package io.dazraf.vertx.futures.processors;
+
+import io.dazraf.vertx.function.Function5;
+import io.dazraf.vertx.futures.Futures;
+import io.dazraf.vertx.function.Function2;
+import io.dazraf.vertx.function.Function3;
+import io.dazraf.vertx.function.Function4;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
+import io.dazraf.vertx.tuple.Tuple5;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.Future;
+import org.slf4j.Logger;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static io.vertx.core.Future.*;
+import static java.util.stream.Collectors.*;
+import static org.slf4j.LoggerFactory.*;
+
+/**
+ * Functions for creating {@code call} processor.
+ * The semantics of {@code call} is to pass the state of the chain (of type {@link T})
+ * to a function that returns a {@link Future} of type {@link R}
+ */
+public interface CallProcessor&lt;T, R&gt; extends FutureProcessor&lt;T, R&gt; {
+
+<span class="fc" id="L33">  Logger LOG = getLogger(CallProcessor.class);</span>
+
+  /**
+   * Receive the state of the chain as a {@code AsyncResult&lt;T&gt;}, call the function {@code callFunction}
+   * which returns {@code Future&lt;R&gt;}
+   * @param callFunction the function to be called with the state of the chain
+   * @param &lt;T&gt; the type for the chain preceding this processor
+   * @param &lt;R&gt; the type of result returned by {@code callFunction} and that of the chain after this processor
+   * @return the processor
+   */
+  static &lt;T, R&gt; CallProcessor&lt;T, R&gt; callOnResponse(Function&lt;AsyncResult&lt;T&gt;, Future&lt;R&gt;&gt; callFunction) {
+<span class="fc" id="L44">    return future -&gt; {</span>
+      try {
+<span class="fc" id="L46">        return callFunction.apply(future);</span>
+<span class="fc" id="L47">      } catch (Throwable error) {</span>
+<span class="fc" id="L48">        LOG.error(&quot;call function failed&quot;);</span>
+<span class="fc" id="L49">        return failedFuture(error);</span>
+      }
+    };
+  }
+
+  /**
+   * Given a successfully resolved chain, calls {@code supplier} which returns the next future for the chain {@code Future&lt;R&gt;}
+   * @param supplier
+   * @param &lt;T&gt; the type for the chain preceding this processor
+   * @param &lt;R&gt; the type of result returned by {@code supplier} and that of the chain after this processor
+   * @return the processor
+   */
+  static &lt;T, R&gt; CallProcessor&lt;T, R&gt; call(Supplier&lt;Future&lt;R&gt;&gt; supplier) {
+<span class="fc" id="L62">    return call(result -&gt; supplier.get());</span>
+  }
+
+  /**
+   * Given a successfully resolved chain, receive the result {@code T} of the chain, which then calls {@code callFunction}
+   * which returns {@code Future&lt;R&gt;}
+   * @param callFunction the function to be called with the result of the chain
+   * @param &lt;T&gt; the type for the chain preceding this processor
+   * @param &lt;R&gt; the type of result returned by {@code callFunction} and that of the chain after this processor
+   * @return the processor
+   */
+  static &lt;T, R&gt; CallProcessor&lt;T, R&gt; call(Function&lt;T, Future&lt;R&gt;&gt; callFunction) {
+<span class="fc" id="L74">    return callOnResponse(ar -&gt; {</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">      if (ar.succeeded()) {</span>
+<span class="fc" id="L76">        return callFunction.apply(ar.result());</span>
+      } else {
+<span class="fc" id="L78">        return failedFuture(ar.cause());</span>
+      }
+    });
+  }
+
+  /**
+   * Given a succesfully resolved chain, producing {@code List&lt;T&gt;}, receive the result and pass each element to
+   * the function {@code flatMapFunction} which in turn returns a {@code Future&lt;R&gt;}.
+   * The resulting {@code List&lt;Future&lt;R&gt;&gt;} is transformed and returned as {@code Future&lt;List&lt;R&gt;&gt;}
+   * @param flatMapFunction the function that receives each element of the chain result {@code List&lt;T&gt;}
+   *                        and for each returns {@code Future&lt;R&gt;}
+   * @param &lt;InputCollection&gt; the type of the incoming list type
+   * @param &lt;T&gt; the type of the elements in the chain result {@code List}
+   * @param &lt;R&gt; the type of result returned by {@code callFunction}
+   * @return the processor
+   */
+  static &lt;InputCollection extends Collection&lt;T&gt;, T, R&gt; CallProcessor&lt;InputCollection, List&lt;R&gt;&gt; flatMap(Function&lt;T, Future&lt;R&gt;&gt; flatMapFunction) {
+<span class="fc" id="L95">    return callOnResponse(ar -&gt; {</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (ar.failed()) {</span>
+<span class="fc" id="L97">          return failedFuture(ar.cause());</span>
+        } else {
+<span class="fc" id="L99">          final List&lt;Future&gt; collect = ar.result().stream().map(flatMapFunction).collect(toList());</span>
+<span class="fc" id="L100">          Future&lt;List&lt;R&gt;&gt; result = future();</span>
+<span class="fc" id="L101">          CompositeFuture.all(collect)</span>
+<span class="fc" id="L102">            .setHandler(acf -&gt; {</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">              if (acf.succeeded()) {</span>
+<span class="fc" id="L104">                result.complete(acf.result().list());</span>
+              } else {
+<span class="fc" id="L106">                result.fail(acf.cause());</span>
+              }
+<span class="fc" id="L108">            });</span>
+<span class="fc" id="L109">          return result;</span>
+        }
+      }
+    );
+  }
+
+  /**
+   * A {@code call} operator on a chain emitting a {@link Tuple2}, destructuring the tuple before calling
+   * {@code callFunction}. As other {@code call} operators, this function returns a {@code Future&lt;R&gt;} which
+   * forms the next step in the {@link Futures} chain.
+   * @param callFunction the function to be called with the destructured result of the chain
+   * @param &lt;T1&gt; the type of the first element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T2&gt; the type of the second element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;R&gt; the type of result returned by {@code callFunction} and that of the chain after this processor
+   * @return the processor
+   */
+  static &lt;T1, T2, R&gt; CallProcessor&lt;Tuple2&lt;T1, T2&gt;, R&gt; call(Function2&lt;T1, T2, Future&lt;R&gt;&gt; callFunction) {
+<span class="fc" id="L126">    return call(tuple -&gt; tuple.apply(callFunction));</span>
+  }
+
+  /**
+   * A {@code call} operator on a chain emitting a {@link Tuple3}, destructuring the tuple before calling
+   * {@code callFunction}. As other {@code call} operators, this function returns a {@code Future&lt;R&gt;} which
+   * forms the next step in the {@link Futures} chain.
+   * @param callFunction the function to be called with the destructured result of the chain
+   * @param &lt;T1&gt; the type of the first element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T2&gt; the type of the second element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T3&gt; the type of the third element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;R&gt; the type of result returned by {@code callFunction} and that of the chain after this processor
+   * @return the processor
+   */
+  static &lt;T1, T2, T3, R&gt; CallProcessor&lt;Tuple3&lt;T1, T2, T3&gt;, R&gt; call(Function3&lt;T1, T2, T3, Future&lt;R&gt;&gt; callFunction) {
+<span class="fc" id="L141">    return call(tuple -&gt; tuple.apply(callFunction));</span>
+  }
+
+  /**
+   * A {@code call} operator on a chain emitting a {@link Tuple4}, destructuring the tuple before calling
+   * {@code callFunction}. As other {@code call} operators, this function returns a {@code Future&lt;R&gt;} which
+   * forms the next step in the {@link Futures} chain.
+   * @param callFunction the function to be called with the destructured result of the chain
+   * @param &lt;T1&gt; the type of the first element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T2&gt; the type of the second element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T3&gt; the type of the third element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T4&gt; the type of the fourth element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;R&gt; the type of result returned by {@code callFunction} and that of the chain after this processor
+   * @return the processor
+   */
+  static &lt;T1, T2, T3, T4, R&gt; CallProcessor&lt;Tuple4&lt;T1, T2, T3, T4&gt;, R&gt; call(Function4&lt;T1, T2, T3, T4, Future&lt;R&gt;&gt; callFunction) {
+<span class="fc" id="L157">    return call(tuple -&gt; tuple.apply(callFunction));</span>
+  }
+
+
+  /**
+   * A {@code call} operator on a chain emitting a {@link Tuple5}, destructuring the tuple before calling
+   * {@code callFunction}. As other {@code call} operators, this function returns a {@code Future&lt;R&gt;} which
+   * forms the next step in the {@link Futures} chain.
+   * @param callFunction the function to be called with the destructured result of the chain
+   * @param &lt;T1&gt; the type of the first element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T2&gt; the type of the second element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T3&gt; the type of the third element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T4&gt; the type of the fourth element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;T5&gt; the type of the fifth element of the tuple, emitted by the chain preceding this processor
+   * @param &lt;R&gt; the type of result returned by {@code callFunction} and that of the chain after this processor
+   * @return the processor
+   */
+  static &lt;T1, T2, T3, T4, T5, R&gt; CallProcessor&lt;Tuple5&lt;T1, T2, T3, T4, T5&gt;, R&gt; call(Function5&lt;T1, T2, T3, T4, T5, Future&lt;R&gt;&gt; callFunction) {
+<span class="fc" id="L175">    return call(tuple -&gt; tuple.apply(callFunction));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
