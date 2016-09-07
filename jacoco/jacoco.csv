@@ -1,0 +1,19 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+vertx-futures,io.dazraf.vertx.futures.processors,RunProcessor,0,55,0,0,0,17,0,10,0,10
+vertx-futures,io.dazraf.vertx.futures.processors,MapProcessor,0,67,0,2,0,14,0,13,0,12
+vertx-futures,io.dazraf.vertx.futures.processors,WrappedException,0,4,0,0,0,2,0,1,0,1
+vertx-futures,io.dazraf.vertx.futures.processors,IfProcessor,0,30,0,4,0,8,0,6,0,4
+vertx-futures,io.dazraf.vertx.futures.processors,CallProcessor,0,126,0,6,0,27,0,21,0,18
+vertx-futures,io.dazraf.vertx.futures.processors,PeekProcessor,0,42,0,0,0,13,0,9,0,9
+vertx-futures,io.dazraf.vertx.futures.http,HttpClientRequestWithFutureResponse,236,81,0,0,66,23,39,14,39,14
+vertx-futures,io.dazraf.vertx.futures.http,HttpFutures.new HTTPException() {...},0,14,0,0,0,2,0,2,0,2
+vertx-futures,io.dazraf.vertx.futures.http,HttpFutures,3,77,1,3,1,26,2,8,1,7
+vertx-futures,io.dazraf.vertx.futures.filters,SuccessFilter,0,50,0,2,0,9,0,13,0,12
+vertx-futures,io.dazraf.vertx.futures.filters,FailureFilter,0,11,0,2,0,4,0,3,0,2
+vertx-futures,io.dazraf.vertx.tuple,Tuple,0,118,0,0,0,10,0,10,0,10
+vertx-futures,io.dazraf.vertx.tuple,Tuple5,42,218,29,21,0,38,24,13,0,12
+vertx-futures,io.dazraf.vertx.tuple,Tuple4,35,182,24,18,0,33,20,12,0,11
+vertx-futures,io.dazraf.vertx.tuple,Tuple3,26,148,18,16,0,28,15,12,0,10
+vertx-futures,io.dazraf.vertx.tuple,Tuple2,19,112,13,13,0,23,11,11,0,9
+vertx-futures,io.dazraf.vertx.futures,FuturesImpl,0,168,1,11,0,48,1,25,0,20
+vertx-futures,io.dazraf.vertx.futures,Futures,0,29,0,0,0,5,0,5,0,5

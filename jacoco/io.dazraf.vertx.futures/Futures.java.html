@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Futures.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vertx-futures</a> &gt; <a href="index.source.html" class="el_package">io.dazraf.vertx.futures</a> &gt; <span class="el_source">Futures.java</span></div><h1>Futures.java</h1><pre class="source lang-java linenums">package io.dazraf.vertx.futures;
+
+import io.dazraf.vertx.futures.processors.FutureProcessor;
+import io.dazraf.vertx.tuple.Tuple;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
+import io.dazraf.vertx.tuple.Tuple5;
+import io.vertx.core.Future;
+
+/**
+ * An interface for chaining {@link Future}s
+ */
+public interface Futures&lt;T&gt; extends Future&lt;T&gt; {
+  &lt;R&gt; Futures&lt;R&gt; then(FutureProcessor&lt;T, R&gt; processor);
+
+  static &lt;T&gt; Futures&lt;T&gt; when(Future&lt;T&gt; future) {
+<span class="fc" id="L18">    return FuturesImpl.when(future);</span>
+  }
+
+  static &lt;T1, T2&gt; Futures&lt;Tuple2&lt;T1, T2&gt;&gt; when(Future&lt;T1&gt; f1,
+                                               Future&lt;T2&gt; f2) {
+<span class="fc" id="L23">    return FuturesImpl.when(Tuple.tuple(f1, f2));</span>
+  }
+
+  static &lt;T1, T2, T3&gt; Futures&lt;Tuple3&lt;T1, T2, T3&gt;&gt; when(Future&lt;T1&gt; f1,
+                                                       Future&lt;T2&gt; f2,
+                                                       Future&lt;T3&gt; f3) {
+<span class="fc" id="L29">    return FuturesImpl.when(Tuple.tuple(f1, f2, f3));</span>
+  }
+
+  static &lt;T1, T2, T3, T4&gt; Futures&lt;Tuple4&lt;T1, T2, T3, T4&gt;&gt; when(Future&lt;T1&gt; f1,
+                                                               Future&lt;T2&gt; f2,
+                                                               Future&lt;T3&gt; f3,
+                                                               Future&lt;T4&gt; f4) {
+<span class="fc" id="L36">    return FuturesImpl.when(Tuple.tuple(f1, f2, f3, f4));</span>
+  }
+
+  static &lt;T1, T2, T3, T4, T5&gt; Futures&lt;Tuple5&lt;T1, T2, T3, T4, T5&gt;&gt; when(Future&lt;T1&gt; f1,
+                                                                       Future&lt;T2&gt; f2,
+                                                                       Future&lt;T3&gt; f3,
+                                                                       Future&lt;T4&gt; f4,
+                                                                       Future&lt;T5&gt; f5) {
+<span class="fc" id="L44">    return FuturesImpl.when(Tuple.tuple(f1, f2, f3, f4, f5));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

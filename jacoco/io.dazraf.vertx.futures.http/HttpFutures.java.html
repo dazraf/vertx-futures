@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>HttpFutures.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vertx-futures</a> &gt; <a href="index.source.html" class="el_package">io.dazraf.vertx.futures.http</a> &gt; <span class="el_source">HttpFutures.java</span></div><h1>HttpFutures.java</h1><pre class="source lang-java linenums">package io.dazraf.vertx.futures.http;
+
+import io.vertx.core.Future;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpClientRequest;
+import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+
+import javax.xml.ws.http.HTTPException;
+
+/**
+ * A set of factory functions to present Vert.x HTTP API as {@link Future}.
+ */
+<span class="nc" id="L15">public class HttpFutures {</span>
+
+  /**
+   * Wrap a {@link HttpClientRequest} as a {@link Future Future&amp;lt;HttpClientResponse&amp;gt;}
+   * The returned object has all the capabilities and methods of a {@link HttpClientRequest}.
+   *&lt;br&gt;&lt;br&gt;
+   * This means that we can use this function like this to chain http operations:
+   * &lt;br&gt;&lt;br&gt;
+   * e.g.
+   * &lt;pre&gt;
+   * {@code
+   * when(future(httpClient.get(&quot;/&quot;)).end())
+   * .onSuccess(HttpFutures::checkHttpSuccess)
+   * .then(response -&gt; bodyObject(response))
+   * .onSuccess(body -&gt; assertThat(context, body.containsKey(&quot;time&quot;), is(true)))
+   * .onFail((Runnable) context::fail);
+   * }
+   * &lt;/pre&gt;
+   *
+   * @param request the HttpClientRequest as created by methods such as {@link io.vertx.core.http.HttpClient#get(String)}
+   * @return An object that implements both {@link Future Future&amp;lt;HttpClientResponse&amp;gt;} and implements all methods of {@link HttpClientRequest}
+   */
+  public static HttpClientRequestWithFutureResponse future(HttpClientRequest request) {
+<span class="fc" id="L38">    return new HttpClientRequestWithFutureResponse(request);</span>
+  }
+
+  /**
+   * Given a {@link HttpClientResponse} returns a {@link Future Future&amp;lt;Buffer&amp;gt;} for retrieving the body of the request as a {@link Buffer}
+   * @param response the response from a http call
+   * @return A future that will resolve to a {@link Buffer} if the Http response is not a HTTP error status
+   */
+  public static Future&lt;Buffer&gt; body(HttpClientResponse response) {
+<span class="fc" id="L47">    Future&lt;Buffer&gt; result = Future.future();</span>
+<span class="fc" id="L48">    response.bodyHandler(result::complete);</span>
+<span class="fc" id="L49">    return result;</span>
+  }
+
+  /**
+   * Similar to {@link #body} except that it also parses the body buffer to a {@link JsonObject}
+   * @param response the response from a http call
+   * @return A {@link Future} that will resolve to a {@link JsonObject} if no HTTP errors or exceptions
+   */
+  public static Future&lt;JsonObject&gt; bodyObject(HttpClientResponse response) {
+<span class="fc" id="L58">    Future&lt;JsonObject&gt; result = Future.future();</span>
+<span class="fc" id="L59">    response.bodyHandler(buffer -&gt; {</span>
+      try {
+<span class="fc" id="L61">        JsonObject jo = buffer.toJsonObject();</span>
+<span class="fc" id="L62">        result.complete(jo);</span>
+<span class="fc" id="L63">      } catch (Throwable err) {</span>
+<span class="fc" id="L64">        result.fail(err);</span>
+<span class="fc" id="L65">      }</span>
+<span class="fc" id="L66">    });</span>
+<span class="fc" id="L67">    return result;</span>
+  }
+
+  /**
+   * Similar to {@link #body} except that it also parses the body buffer to a {@link JsonArray}
+   * @param response the response from a http call
+   * @return A {@link Future} that will resolve to a {@link JsonArray} if no HTTP errors or exceptions
+   */
+  public static Future&lt;JsonArray&gt; bodyArray(HttpClientResponse response) {
+<span class="fc" id="L76">    Future&lt;JsonArray&gt; result = Future.future();</span>
+<span class="fc" id="L77">    response.bodyHandler(buffer -&gt; {</span>
+      try {
+<span class="fc" id="L79">        JsonArray ja = buffer.toJsonArray();</span>
+<span class="fc" id="L80">        result.complete(ja);</span>
+<span class="fc" id="L81">      } catch (Throwable err) {</span>
+<span class="fc" id="L82">        result.fail(err);</span>
+<span class="fc" id="L83">      }</span>
+<span class="fc" id="L84">    });</span>
+<span class="fc" id="L85">    return result;</span>
+  }
+
+  /**
+   * A helper function that checks the response code for a client or server error state 4xx, 5xx
+   * @param response the response from a http request
+   * @throws HTTPException if 4xx or 5xx
+   */
+  public static void checkHttpSuccess(HttpClientResponse response) throws HTTPException {
+<span class="fc" id="L94">    int category = response.statusCode() / 100;</span>
+<span class="pc bpc" id="L95" title="1 of 4 branches missed.">    if (category == 4 || category == 5) {</span>
+<span class="fc" id="L96">      throw new HTTPException(response.statusCode()) {</span>
+        @Override
+        public String toString() {
+<span class="fc" id="L99">          return &quot;HTTP request failed with status code &quot; + getStatusCode();</span>
+        }
+      };
+    }
+<span class="fc" id="L103">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
