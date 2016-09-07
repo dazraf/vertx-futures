@@ -7,8 +7,6 @@ import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-import javax.xml.ws.http.HTTPException;
-
 /**
  * A set of factory functions to present Vert.x HTTP API as {@link Future}.
  */
@@ -23,7 +21,7 @@ public interface HttpFutures {
    * e.g.
    * <pre>
    * {@code
-   * when(future(httpClient.get("/")).end())
+   * when(httpFuture(httpClient.get("/")).end())
    * .onSuccess(HttpFutures::checkHttpSuccess)
    * .then(response -> bodyObject(response))
    * .onSuccess(body -> assertThat(context, body.containsKey("time"), is(true)))
@@ -34,7 +32,7 @@ public interface HttpFutures {
    * @param request the HttpClientRequest as created by methods such as {@link io.vertx.core.http.HttpClient#get(String)}
    * @return An object that implements both {@link Future Future&lt;HttpClientResponse&gt;} and implements all methods of {@link HttpClientRequest}
    */
-  static HttpClientRequestWithFutureResponse future(HttpClientRequest request) {
+  static HttpClientRequestWithFutureResponse httpFuture(HttpClientRequest request) {
     return new HttpClientRequestWithFutureResponse(request);
   }
 
@@ -46,6 +44,17 @@ public interface HttpFutures {
   static Future<Buffer> body(HttpClientResponse response) {
     Future<Buffer> result = Future.future();
     response.bodyHandler(result::complete);
+    return result;
+  }
+
+  /**
+   * Given a {@link HttpClientResponse} returns a {@link Future Future&lt;String&gt;} for retrieving the body of the request as a {@link String}
+   * @param response the response from a http call
+   * @return A future that will resolve to a {@link Buffer} if the Http response is not a HTTP error status
+   */
+  static Future<String> bodyAsString(HttpClientResponse response) {
+    Future<String> result = Future.future();
+    response.bodyHandler(buffer -> result.complete(buffer.toString()));
     return result;
   }
 
@@ -88,17 +97,12 @@ public interface HttpFutures {
   /**
    * A helper function that checks the response code for a client or server error state 4xx, 5xx
    * @param response the response from a http request
-   * @throws HTTPException if 4xx or 5xx
+   * @throws HttpException if 4xx or 5xx
    */
-  static void checkHttpSuccess(HttpClientResponse response) throws HTTPException {
+  static void checkHttpSuccess(HttpClientResponse response) throws HttpException {
     int category = response.statusCode() / 100;
     if (category == 4 || category == 5) {
-      throw new HTTPException(response.statusCode()) {
-        @Override
-        public String toString() {
-          return "HTTP request failed with status code " + getStatusCode();
-        }
-      };
+      throw new HttpException(response, "HTTP request failed with status code " + response.statusCode());
     }
   }
 }

@@ -38,7 +38,7 @@ Here, we write a unit test to call a Vert.x [`HttpClient`](http://vertx.io/docs/
 
 We convert the [`HttpClientRequest`](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientRequest.html) 
 into a [`Future`](http://vertx.io/docs/apidocs/io/vertx/core/Future.html) using the 
-[`future()`](apiDocs/io/dazraf/vertx/futures/http/HttpFutures.html#future-io.vertx.core.http.HttpClientRequest-) 
+[`httpFuture()`](apiDocs/io/dazraf/vertx/futures/http/HttpFutures.html#httpFuture-io.vertx.core.http.HttpClientRequest-) 
 factory method.
 
 Once we have a `Future` we can start chaining its state to subsequent operations.

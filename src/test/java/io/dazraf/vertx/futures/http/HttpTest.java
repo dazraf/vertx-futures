@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 import static io.dazraf.vertx.futures.Futures.*;
 import static io.dazraf.vertx.futures.VertxMatcherAssert.*;
 import static io.dazraf.vertx.futures.http.HttpFutures.*;
-import static io.dazraf.vertx.futures.http.HttpFutures.future;
+import static io.dazraf.vertx.futures.http.HttpFutures.httpFuture;
 import static io.dazraf.vertx.futures.processors.CallProcessor.*;
 import static io.dazraf.vertx.futures.processors.MapProcessor.*;
 import static io.dazraf.vertx.futures.processors.RunProcessor.*;
@@ -80,7 +80,7 @@ public class HttpTest {
   public void test_simpleGet(TestContext context) {
     Async async = context.async();
 
-    when(future(httpClient.get("/object")).end())
+    when(httpFuture(httpClient.get("/object")).end())
         .then(run(HttpFutures::checkHttpSuccess))
         .then(call(response -> Tuple.tuple(succeededFuture(response), bodyObject(response))))
         .then(run((response, body) -> assertThat(context, body.containsKey("time"), is(true))))
@@ -92,7 +92,7 @@ public class HttpTest {
 
   @Test
   public void test_methods_unsupported() {
-    final HttpClientRequestWithFutureResponse future = future(httpClient.get("/"));
+    final HttpClientRequestWithFutureResponse future = httpFuture(httpClient.get("/"));
     assertThrows(() -> future.complete(null), UnsupportedOperationException.class);
     assertThrows(future::complete, UnsupportedOperationException.class);
     assertThrows(() -> future.fail("error"), UnsupportedOperationException.class);
@@ -105,7 +105,7 @@ public class HttpTest {
   public void test_getBodyAsBuffer(TestContext context) {
     Async async = context.async();
 
-    when(future(httpClient.get("/object")).end())
+    when(httpFuture(httpClient.get("/object")).end())
       .then(run(HttpFutures::checkHttpSuccess))
       .then(call(HttpFutures::body))
       .then(map(buffer -> buffer.toString()))
@@ -119,7 +119,7 @@ public class HttpTest {
   public void test_getBodyAsArray(TestContext context) {
     Async async = context.async();
 
-    when(future(httpClient.get("/array")).end())
+    when(httpFuture(httpClient.get("/array")).end())
       .then(run(HttpFutures::checkHttpSuccess))
       .then(call(HttpFutures::bodyArray))
       .then(run(body -> assertThat(context, body.size(), is(3))))
@@ -131,7 +131,7 @@ public class HttpTest {
   public void test_givenBadArray_fail(TestContext context) {
     Async async = context.async();
 
-    when(future(httpClient.get("/badarray")).end())
+    when(httpFuture(httpClient.get("/badarray")).end())
       .then(run(HttpFutures::checkHttpSuccess))
       .then(call(HttpFutures::bodyArray))
       .then(runOnFail(err -> {
@@ -145,7 +145,7 @@ public class HttpTest {
   public void test_givenBadObject_fail(TestContext context) {
     Async async = context.async();
 
-    when(future(httpClient.get("/badobject")).end())
+    when(httpFuture(httpClient.get("/badobject")).end())
       .then(run(HttpFutures::checkHttpSuccess))
       .then(call(HttpFutures::bodyObject))
       .then(runOnFail(err -> {
@@ -159,7 +159,7 @@ public class HttpTest {
   public void test_givenBadResponse_checkHttpSuccess_fails(TestContext context) {
     Async async = context.async();
 
-    when(future(httpClient.get("/400")).end())
+    when(httpFuture(httpClient.get("/400")).end())
       .then(run(HttpFutures::checkHttpSuccess))
       .then(runOnFail(err -> {
         HTTPException httpException = (HTTPException)err;

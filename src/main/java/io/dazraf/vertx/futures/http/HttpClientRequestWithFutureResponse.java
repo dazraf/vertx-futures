@@ -25,7 +25,7 @@ import io.vertx.core.http.HttpVersion;
  * e.g.
  * <pre>
  * {@code
- * when(future(httpClient.get("/")).end())
+ * when(httpFuture(httpClient.get("/")).end())
  * .onSuccess(HttpFutures::checkHttpSuccess)
  * .then(response -> bodyObject(response))
  * .onSuccess(body -> assertThat(context, body.containsKey("time"), is(true)))

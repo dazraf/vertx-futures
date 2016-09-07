@@ -24,7 +24,7 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 import static io.dazraf.vertx.futures.Futures.when;
-import static io.dazraf.vertx.futures.http.HttpFutures.future;
+import static io.dazraf.vertx.futures.http.HttpFutures.httpFuture;
 import static io.dazraf.vertx.futures.processors.CallProcessor.*;
 import static io.dazraf.vertx.futures.processors.MapProcessor.*;
 import static io.dazraf.vertx.futures.processors.PeekProcessor.*;
@@ -126,7 +126,7 @@ public class StarwarsTest {
   }
 
   private Future<JsonObject> httpGetJsonObject(String resource) {
-    return when(future(httpClient.get(resource)).end())
+    return when(httpFuture(httpClient.get(resource)).end())
       .then(run(HttpFutures::checkHttpSuccess))
       .then(call(HttpFutures::bodyObject))
       .then(call(result -> {
