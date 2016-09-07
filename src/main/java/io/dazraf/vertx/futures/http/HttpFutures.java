@@ -12,7 +12,7 @@ import javax.xml.ws.http.HTTPException;
 /**
  * A set of factory functions to present Vert.x HTTP API as {@link Future}.
  */
-public class HttpFutures {
+public interface HttpFutures {
 
   /**
    * Wrap a {@link HttpClientRequest} as a {@link Future Future&lt;HttpClientResponse&gt;}
@@ -34,7 +34,7 @@ public class HttpFutures {
    * @param request the HttpClientRequest as created by methods such as {@link io.vertx.core.http.HttpClient#get(String)}
    * @return An object that implements both {@link Future Future&lt;HttpClientResponse&gt;} and implements all methods of {@link HttpClientRequest}
    */
-  public static HttpClientRequestWithFutureResponse future(HttpClientRequest request) {
+  static HttpClientRequestWithFutureResponse future(HttpClientRequest request) {
     return new HttpClientRequestWithFutureResponse(request);
   }
 
@@ -43,7 +43,7 @@ public class HttpFutures {
    * @param response the response from a http call
    * @return A future that will resolve to a {@link Buffer} if the Http response is not a HTTP error status
    */
-  public static Future<Buffer> body(HttpClientResponse response) {
+  static Future<Buffer> body(HttpClientResponse response) {
     Future<Buffer> result = Future.future();
     response.bodyHandler(result::complete);
     return result;
@@ -54,7 +54,7 @@ public class HttpFutures {
    * @param response the response from a http call
    * @return A {@link Future} that will resolve to a {@link JsonObject} if no HTTP errors or exceptions
    */
-  public static Future<JsonObject> bodyObject(HttpClientResponse response) {
+  static Future<JsonObject> bodyObject(HttpClientResponse response) {
     Future<JsonObject> result = Future.future();
     response.bodyHandler(buffer -> {
       try {
@@ -72,7 +72,7 @@ public class HttpFutures {
    * @param response the response from a http call
    * @return A {@link Future} that will resolve to a {@link JsonArray} if no HTTP errors or exceptions
    */
-  public static Future<JsonArray> bodyArray(HttpClientResponse response) {
+  static Future<JsonArray> bodyArray(HttpClientResponse response) {
     Future<JsonArray> result = Future.future();
     response.bodyHandler(buffer -> {
       try {
@@ -90,7 +90,7 @@ public class HttpFutures {
    * @param response the response from a http request
    * @throws HTTPException if 4xx or 5xx
    */
-  public static void checkHttpSuccess(HttpClientResponse response) throws HTTPException {
+  static void checkHttpSuccess(HttpClientResponse response) throws HTTPException {
     int category = response.statusCode() / 100;
     if (category == 4 || category == 5) {
       throw new HTTPException(response.statusCode()) {
