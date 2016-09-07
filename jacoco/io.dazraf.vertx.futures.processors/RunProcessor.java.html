@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RunProcessor.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vertx-futures</a> &gt; <a href="index.source.html" class="el_package">io.dazraf.vertx.futures.processors</a> &gt; <span class="el_source">RunProcessor.java</span></div><h1>RunProcessor.java</h1><pre class="source lang-java linenums">package io.dazraf.vertx.futures.processors;
+
+import io.dazraf.vertx.consumer.Consumer5;
+import io.dazraf.vertx.tuple.Tuple5;
+import org.slf4j.Logger;
+
+import java.util.function.Consumer;
+
+import io.dazraf.vertx.consumer.Consumer2;
+import io.dazraf.vertx.consumer.Consumer3;
+import io.dazraf.vertx.consumer.Consumer4;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.dazraf.vertx.futures.Futures;
+
+import static io.dazraf.vertx.futures.filters.FailureFilter.failure;
+import static io.dazraf.vertx.futures.filters.SuccessFilter.success;
+import static org.slf4j.LoggerFactory.getLogger;
+
+/**
+ * This interface is a {@link FutureProcessor} that executes a function
+ * given a state change in a {@link Futures} chain.
+ *
+ * No result is collected from the called function.
+ * The type of the {@link Futures} chain does not alter.
+ * An exception raised by the called function will cause the {@link Futures} chain to fail with the respective cause.
+ */
+public interface RunProcessor&lt;T&gt; extends FutureProcessor&lt;T, T&gt; {
+
+<span class="fc" id="L34">  Logger LOG = getLogger(RunProcessor.class);</span>
+
+  /**
+   * Observe the state of the chain. Any exceptions from the consumer will cause the chain to fail.
+   * @param consumer
+   * @param &lt;T&gt;
+   * @return
+   */
+  static &lt;T&gt; RunProcessor&lt;T&gt; runOnResponse(Handler&lt;AsyncResult&lt;T&gt;&gt; consumer) {
+<span class="fc" id="L43">    return future -&gt; {</span>
+<span class="fc" id="L44">      Future&lt;T&gt; result = Future.future();</span>
+      try {
+<span class="fc" id="L46">        consumer.handle(future);</span>
+<span class="fc" id="L47">        result.completer().handle(future);</span>
+<span class="fc" id="L48">      } catch (Throwable error) {</span>
+<span class="fc" id="L49">        LOG.error(&quot;consumer function failed&quot;, error);</span>
+<span class="fc" id="L50">        result.fail(error);</span>
+<span class="fc" id="L51">      }</span>
+<span class="fc" id="L52">      return result;</span>
+    };
+  }
+
+  static &lt;T&gt; RunProcessor&lt;T&gt; run(Runnable runnable) {
+<span class="fc" id="L57">    return runOnResponse(success(runnable));</span>
+  }
+
+  static &lt;T&gt; RunProcessor&lt;T&gt; run(Consumer&lt;T&gt; consumer) {
+<span class="fc" id="L61">    return runOnResponse(success(consumer));</span>
+  }
+
+  static &lt;T1, T2&gt; RunProcessor&lt;Tuple2&lt;T1, T2&gt;&gt; run(Consumer2&lt;T1, T2&gt; consumer) {
+<span class="fc" id="L65">    return runOnResponse(success(consumer));</span>
+  }
+
+  static &lt;T1, T2, T3&gt; RunProcessor&lt;Tuple3&lt;T1, T2, T3&gt;&gt; run(Consumer3&lt;T1, T2, T3&gt; consumer) {
+<span class="fc" id="L69">    return runOnResponse(success(consumer));</span>
+  }
+
+  static &lt;T1, T2, T3, T4&gt; RunProcessor&lt;Tuple4&lt;T1, T2, T3, T4&gt;&gt; run(Consumer4&lt;T1, T2, T3, T4&gt; consumer) {
+<span class="fc" id="L73">    return runOnResponse(success(consumer));</span>
+  }
+
+  static &lt;T1, T2, T3, T4, T5&gt; RunProcessor&lt;Tuple5&lt;T1, T2, T3, T4, T5&gt;&gt; run(Consumer5&lt;T1, T2, T3, T4, T5&gt; consumer) {
+<span class="fc" id="L77">    return runOnResponse(success(consumer));</span>
+  }
+
+  static &lt;T&gt; RunProcessor&lt;T&gt; runOnFail(Consumer&lt;Throwable&gt; consumer) {
+<span class="fc" id="L81">    return runOnResponse(failure(consumer));</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

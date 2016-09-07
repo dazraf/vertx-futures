@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapProcessor.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vertx-futures</a> &gt; <a href="index.source.html" class="el_package">io.dazraf.vertx.futures.processors</a> &gt; <span class="el_source">MapProcessor.java</span></div><h1>MapProcessor.java</h1><pre class="source lang-java linenums">package io.dazraf.vertx.futures.processors;
+
+import java.util.function.Function;
+
+import io.dazraf.vertx.function.Function2;
+import io.dazraf.vertx.function.Function3;
+import io.dazraf.vertx.function.Function4;
+import io.dazraf.vertx.function.Function5;
+import io.dazraf.vertx.tuple.Tuple2;
+import io.dazraf.vertx.tuple.Tuple3;
+import io.dazraf.vertx.tuple.Tuple4;
+import io.dazraf.vertx.tuple.Tuple5;
+import io.vertx.core.AsyncResult;
+
+import static io.vertx.core.Future.failedFuture;
+import static io.vertx.core.Future.succeededFuture;
+
+/**
+ * A {@link FutureProcessor} that maps successful values to a new type {@link R}
+ */
+public interface MapProcessor&lt;T, R&gt; extends FutureProcessor&lt;T, R&gt; {
+  static &lt;T, R&gt; MapProcessor&lt;T, R&gt; mapOnResponse(Function&lt;AsyncResult&lt;T&gt;, R&gt; function) {
+<span class="fc" id="L23">    return future -&gt; {</span>
+      try {
+<span class="fc" id="L25">        return succeededFuture(function.apply(future));</span>
+      }
+<span class="fc" id="L27">      catch (WrappedException err) {</span>
+<span class="fc" id="L28">        return failedFuture(err.getCause());</span>
+      }
+<span class="fc" id="L30">      catch (Throwable err) {</span>
+<span class="fc" id="L31">        return failedFuture(err);</span>
+      }
+    };
+  }
+
+
+  static &lt;T, R&gt; MapProcessor&lt;T, R&gt; map(Function&lt;T, R&gt; function) {
+<span class="fc" id="L38">    return mapOnResponse(future -&gt; {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">      if (future.succeeded()) {</span>
+<span class="fc" id="L40">        return function.apply(future.result());</span>
+      } else {
+<span class="fc" id="L42">        throw new WrappedException(future.cause());</span>
+      }
+    });
+  }
+
+  static &lt;T1, T2, R&gt; MapProcessor&lt;Tuple2&lt;T1, T2&gt;, R&gt; map(Function2&lt;T1, T2, R&gt; function) {
+<span class="fc" id="L48">    return map(tuple -&gt; tuple.apply(function));</span>
+  }
+
+  static &lt;T1, T2, T3, R&gt; MapProcessor&lt;Tuple3&lt;T1, T2, T3&gt;, R&gt; map(Function3&lt;T1, T2, T3, R&gt; function) {
+<span class="fc" id="L52">    return map(tuple -&gt; tuple.apply(function));</span>
+  }
+
+  static &lt;T1, T2, T3, T4, R&gt; MapProcessor&lt;Tuple4&lt;T1, T2, T3, T4&gt;, R&gt; map(Function4&lt;T1, T2, T3, T4, R&gt; function) {
+<span class="fc" id="L56">    return map(tuple -&gt; tuple.apply(function));</span>
+  }
+
+  static &lt;T1, T2, T3, T4, T5, R&gt; MapProcessor&lt;Tuple5&lt;T1, T2, T3, T4, T5&gt;, R&gt; map(Function5&lt;T1, T2, T3, T4, T5, R&gt; function) {
+<span class="fc" id="L60">    return map(tuple -&gt; tuple.apply(function));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
