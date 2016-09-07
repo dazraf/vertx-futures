@@ -18,8 +18,8 @@ Main [Site](http://www.dazraf.io/vertx-futures/)
 ## Goals:
 
 * Efficient: for developers and computers
-* Typesafe *Composition* **and** *Decomposition*
-* Simple API: *when*, *then*, *onSuccess*, *onFail*, *onComplete*, *peek*, *map*
+* Typesafe *Composition* and *Decomposition*
+* Simple API: *when*, *then*, *call*, *run*, *peek*, *map* etc
 * Keeps with `io.vertx.core.Future` naming convention 
 
 ## Simple Example
