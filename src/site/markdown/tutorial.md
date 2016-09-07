@@ -30,7 +30,7 @@ For legibility, it's best to statically import these.
         .then(run((response, body) -> LOG
             .info("Response {} body checks out: {}", response.statusCode(), body.encode())))
         .then(run(async::complete))
-        .then(ifFailedRun(context::fail));
+        .then(runOnFail(context::fail));
   }
 ```
 
@@ -126,7 +126,7 @@ To show how that works, we'll write a test to get a list of all Star Wars film t
         .collect(Collectors.toList())))
       .then(peek(list -> list.forEach(LOG::info)))
       .then(run(async::complete))
-      .then(ifFailedRun(testContext::fail));
+      .then(runOnFail(testContext::fail));
   }
 ```
 

@@ -29,7 +29,7 @@ Main [Site](http://www.dazraf.io/vertx-futures/)
         .then(call(id -> when(getName(id), getAge(id))))
         .then(call((name, age) -> composeMessage(name, age)))
         .then(run(result -> LOG.info(result)))
-        .then(ifFailedRun(cause -> LOG.error("error handler", cause)));
+        .then(runOnFail(cause -> LOG.error("error handler", cause)));
 ```
 
 For more, please refer to the main [site](http://www.dazraf.io/vertx-futures/).

@@ -16,7 +16,7 @@ It simplies complex [`AsyncResult<T>`](http://vertx.io/docs/apidocs/io/vertx/cor
       .then(call(residents -> getUniqueStarshipsUsedByResidents(residents, getAllStarships())))
       .then(peek(starships -> starships.forEach(o -> LOG.info(o.toString()))))
       .then(run(async::complete))
-      .then(ifFailedRun(testContext::fail));
+      .then(runOnFail(testContext::fail));
   }
 ```
 
