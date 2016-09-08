@@ -33,4 +33,6 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .vertx
+.DS_Store
+
 
