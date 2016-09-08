@@ -491,6 +491,23 @@ public class HttpClientRequestFutureTest {
         .then(runOnFail(testContext::fail));
   }
 
+  @Test
+  public void canCheckStatusOfRequest(TestContext context) {
+    String path = "/the/path/to/the/resource";
+    String query = "a=1&b=2";
+    String host = "localhost";
+    String rawmethod = "purge";
+
+    HttpClientRequestWithFutureResponse req = httpFuture(httpClient.post(path + "?" + query));
+    context.assertEquals(path, req.path());
+    context.assertEquals(query, req.query());
+    req.setHost(host);
+    context.assertEquals(host, req.getHost());
+    context.assertEquals(false, req.isComplete());
+    req.setRawMethod(rawmethod);
+    context.assertEquals(rawmethod, req.getRawMethod());
+  }
+
   /**
    * This is a relatively complex HTTP test to get sensible coverage of the WriteQueue functionality
    * Setup: Client and Server with back-pressure and reduced writeQueue length.
